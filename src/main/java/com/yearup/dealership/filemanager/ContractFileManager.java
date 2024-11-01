@@ -11,83 +11,105 @@ import java.util.ArrayList;
 
 public class ContractFileManager {
 
-    //static ArrayList<Contract> contracts;
+    public static ArrayList<Contract> getContractsFromCSV(String file) {
+        ArrayList<Contract> contractsList = new ArrayList<>();  // Initialize ArrayList for contracts
 
+        try  {
+            BufferedReader bf = new BufferedReader(new FileReader(file));
 
-    public static Contract getFromCSV(String filename) {
+            String line;
 
-       Contract c = null; // c for contract
+            while ((line = bf.readLine()) != null) {
+                String[] tokens = line.split("\\|");
 
-       try {
-           BufferedReader br = new BufferedReader(new FileReader(filename));
+                if (tokens.length == 18) {  // Parsing a SALE contract
+                    String contractType = tokens[0];
+                    String date = tokens[1];
+                    String name = tokens[2];
+                    String email = tokens[3];
 
-           String line;
+                    int vin = Integer.parseInt(tokens[4]);
+                    int year = Integer.parseInt(tokens[5]);
+                    String make = tokens[6];
+                    String model = tokens[7];
+                    String vehicleType = tokens[8];
+                    String color = tokens[9];
+                    int odometer = Integer.parseInt(tokens[10]);
+                    double price = Double.parseDouble(tokens[11]);
+                    Vehicle vehicleSold = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
 
-           while ((line = br.readLine()) != null) {
-               String[] tokens = line.split("\\|");
+                    double salesTax = Double.parseDouble(tokens[12]);
+                    double recordingFee = Double.parseDouble(tokens[13]);
+                    double processingFee = Double.parseDouble(tokens[14]);
+                    double totalPrice = Double.parseDouble(tokens[15]);
 
-               if(tokens.length > 1) {
-                   String contractType = tokens[0];
-                   String date = tokens[1];
-                   String name = tokens[2];
-                   String email = tokens[3];
+                    // Handle finance status manually (YES/NO)
+                    boolean isFinance = tokens[16].equalsIgnoreCase("YES");
+                    double payments = Double.parseDouble(tokens[17]);
 
-                   int vin = Integer.parseInt(tokens[4]);
-                   int year = Integer.parseInt(tokens[5]);
-                   String make = tokens[6];
-                   String model = tokens[7];
-                   String vehicleType = tokens[8];
-                   String color = tokens[9];
-                   int odometer = Integer.parseInt(tokens[10]);
-                   double price = Double.parseDouble(tokens[11]);
-                   Vehicle vehicleSold = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
+                    Contract contract = new SalesContract(
+                            contractType,
+                            date,
+                            name,
+                            email,
+                            vehicleSold,
+                            salesTax,
+                            processingFee,
+                            recordingFee,
+                            totalPrice,
+                            isFinance,
+                            payments
+                    );
 
-                   if(contractType.equalsIgnoreCase("SALES")){
-                       double salesTax = Double.parseDouble(tokens[12]);
-                       double recordingFee = Double.parseDouble(tokens[13]);
-                       double processingFee = Double.parseDouble(tokens[14]);
-                       double totalPrice = Double.parseDouble(tokens[15]);
-                       boolean isFinance = Boolean.parseBoolean(tokens[16]);
-                       double payments = Double.parseDouble(tokens[17]);
+                    contractsList.add(contract);  // Add to the list
 
-                       c = new SalesContract(date,
-                               name,
-                               email,
-                               vehicleSold,
-                               salesTax,
-                               processingFee,
-                               recordingFee,
-                               totalPrice,
-                               isFinance,
-                               payments);
+                } else if (tokens.length == 16) {  // Parsing a LEASE contract
+                    String contractType = tokens[0];
+                    String date = tokens[1];
+                    String name = tokens[2];
+                    String email = tokens[3];
 
-                   }
+                    int vin = Integer.parseInt(tokens[4]);
+                    int year = Integer.parseInt(tokens[5]);
+                    String make = tokens[6];
+                    String model = tokens[7];
+                    String vehicleType = tokens[8];
+                    String color = tokens[9];
+                    int odometer = Integer.parseInt(tokens[10]);
+                    double price = Double.parseDouble(tokens[11]);
+                    Vehicle vehicleSold = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
 
-                   else if (contractType.equalsIgnoreCase("LEASE")) {
-                       double endValue = Double.parseDouble(tokens[12]);
-                       double leaseFee = Double.parseDouble(tokens[13]);
-                       double totalPrice = Double.parseDouble(tokens[14]);
-                       double payments = Double.parseDouble(tokens[15]);
+                    double endValue = Double.parseDouble(tokens[12]);
+                    double leaseFee = Double.parseDouble(tokens[13]);
+                    double totalPrice = Double.parseDouble(tokens[14]);
+                    double payments = Double.parseDouble(tokens[15]);
 
-                       c = new LeaseContract(date,
-                               name,
-                               email,
-                               vehicleSold,
-                               endValue,
-                               leaseFee,
-                               totalPrice,
-                               payments);
-                   }
-               }
-               //System.out.println(c);
-           }
-            br.close();
-       }
-       catch (Exception e) {
+                    Contract contract = new LeaseContract(
+                            contractType,
+                            date,
+                            name,
+                            email,
+                            vehicleSold,
+                            endValue,
+                            leaseFee,
+                            totalPrice,
+                            payments
+                    );
 
-       }
-       return c;
+                    contractsList.add(contract);  // Add to the list
+                }
+            } bf.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();  // Print stack trace for debugging
+        }
+
+        return contractsList;  // Return the list of contracts
     }
+
+
+
+
 
     /**
      * saveContract() method accepts a Contract parameter; instanceOf checks the type of contract

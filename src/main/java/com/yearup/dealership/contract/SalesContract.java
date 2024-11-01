@@ -16,20 +16,21 @@ public class SalesContract extends Contract {
     private double processingFee; // a fee of $295 if vehicle under $10k, else $495
     private boolean isFinance; // do they want to finance (yes/no)
 
-    public SalesContract(String date,
+    public SalesContract(String contractType,
+                         String date,
                          String customerName,
                          String customerEmail,
                          Vehicle vehicleSold,
-                        // double totalPrice,
+                         // double totalPrice,
                          //double monthlyPayment,
                          double salesTax,
                          double recordingFee,
                          double processingFee,
                          double totalPrice,
                          boolean isFinance,
-                          double monthlyPayment
+                         double monthlyPayment
     ) {
-        super(date, customerName, customerEmail, vehicleSold, totalPrice, monthlyPayment);
+        super(contractType, date, customerName, customerEmail, vehicleSold, totalPrice, monthlyPayment);
         this.salesTax = salesTax;
         this.recordingFee = recordingFee;
         this.processingFee = processingFee;
@@ -132,7 +133,7 @@ public class SalesContract extends Contract {
             setRecordingFee(495);
             price = vehicleSold.getPrice() + salesTax + recordingFee + processingFee;
         }
-       return price;
+        return price;
     }
 
     @Override
@@ -161,8 +162,31 @@ public class SalesContract extends Contract {
     }
 
     @Override
-    public String toString(){
-        return "SALES" + super.toString() + "|" + salesTax + " | " + recordingFee + "|" + processingFee + " | " + totalPrice + "|" + isFinance + "|" + monthlyPayment;
+    public String toString() {
+        String financeStatus = " ";
+        if(isFinance() == true){
+            financeStatus = "YES";
+        }
+        else if (isFinance() == false){
+            financeStatus = "NO";
+        }
+        setContractType("SALES");
+        return this.contractType +
+                "|" + this.date +
+                "|" + this.customerName +
+                "|" + this.customerEmail +
+                "|" + this.vehicleSold.getVin() +
+                "|" + this.vehicleSold.getYear() +
+                "|" + this.vehicleSold.getVehicleType() +
+                "|" + this.vehicleSold.getColor() +
+                "|" + this.vehicleSold.getOdometer() +
+                "|" + this.vehicleSold.getPrice() +
+                "|" + this.salesTax +
+                "|" + this.processingFee +
+                "|" + this.recordingFee +
+                "|" + this.totalPrice +
+                "|" + financeStatus +
+                "|" + this.monthlyPayment + "\n";
     }
 
 }

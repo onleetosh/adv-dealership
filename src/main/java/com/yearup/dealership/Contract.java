@@ -13,6 +13,7 @@ public abstract class Contract {
      */
 
   //  protected String type;
+    protected String contractType;
     protected String date;
     protected String customerName;
     protected String customerEmail;
@@ -26,13 +27,15 @@ public abstract class Contract {
 
     protected ArrayList<Contract> listOfContracts;
 
-    public Contract(String date,
+    public Contract(String contractType,
+                    String date,
                     String customerName,
                     String customerEmail,
                     Vehicle vehicleSold,
                     double totalPrice,
                     double monthlyPayment) {
 
+        this.contractType = contractType;
         this.date = date;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
@@ -43,10 +46,15 @@ public abstract class Contract {
 
     }
 
+
+
     /**
      * Getters
      */
 
+    public String getContractType() {
+        return contractType;
+    }
 
     public String getDate() {
         return date;
@@ -71,9 +79,15 @@ public abstract class Contract {
 
     public abstract double getMonthlyPayment();
 
+    public void setContractType(String contractType) {
+        this.contractType = contractType;
+    }
+
     /**
      * Setters
      */
+
+
 
     public void setDate(String date) {
         this.date = date;
@@ -109,6 +123,7 @@ public abstract class Contract {
         String choice = Console.PromptForString("enter [S] to Sell or [L] to Leasing vehicle");
         if (choice.equalsIgnoreCase("S")){
 
+            setContractType("SALES");
             String date = Console.PromptForString("Enter date (MM-dd-YYYY): ");
             String name = Console.PromptForString("Enter your name" );
             String email = Console.PromptForString("Enter e-mail address: ");
@@ -132,6 +147,7 @@ public abstract class Contract {
             boolean finance = Console.PromptForYesNo("Interested in financing?");
 
             SalesContract newSales = new SalesContract(
+                    contractType,
                     date,
                     name,
                     email,
@@ -147,6 +163,7 @@ public abstract class Contract {
         }
         else if (choice.equalsIgnoreCase("L")){
 
+            setContractType("LEASE");
             String date = Console.PromptForString("Enter date (MM-dd-YYYY): ");
             String name = Console.PromptForString("Enter your name" );
             String email = Console.PromptForString("Enter e-mail address: ");
@@ -166,7 +183,9 @@ public abstract class Contract {
             double monthlyPayment = Console.PromptForDouble("Enter monthly payment: ");
             double expectEndValue = Console.PromptForDouble("Expect end value");
             double leaseFee = Console.PromptForDouble("");
-            LeaseContract newLease = new LeaseContract(date,
+            LeaseContract newLease = new LeaseContract(
+                    contractType,
+                    date,
                     name,
                     email,
                     vehicleSold,
@@ -177,8 +196,4 @@ public abstract class Contract {
         }
     }
 
-    @Override
-    public String toString(){
-        return date + " | " + customerName + "|" + customerEmail;
-    }
 }

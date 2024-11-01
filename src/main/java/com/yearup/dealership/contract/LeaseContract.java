@@ -14,7 +14,8 @@ public class LeaseContract extends Contract {
     private double expectEndingValue; //  e = p * (50/100)
     private double leaseFee; // f = p * (7/100)
 
-    public LeaseContract(String date,
+    public LeaseContract(String contractType,
+                         String date,
                          String customerName,
                          String customerEmail,
                          Vehicle vehicleSold,
@@ -22,7 +23,7 @@ public class LeaseContract extends Contract {
                          double monthlyPayment,
                          double expectEndingValue,
                          double leaseFee) {
-        super(date, customerName, customerEmail, vehicleSold, totalPrice, monthlyPayment);
+        super(contractType, date, customerName, customerEmail, vehicleSold, totalPrice, monthlyPayment);
         this.expectEndingValue = expectEndingValue;
         this.leaseFee = leaseFee;
     }
@@ -86,7 +87,7 @@ public class LeaseContract extends Contract {
     //all leases are financed at 4.0% for 36 mos
     @Override
     public double getTotalPrice(){
-         return expectEndingValue + leaseFee;
+        return expectEndingValue + leaseFee;
     }
     @Override
     public double getMonthlyPayment(){
@@ -96,12 +97,27 @@ public class LeaseContract extends Contract {
 
         double payment= vehicleSold.getPrice();
 
-                return payment;
+        return payment;
     }
 
     @Override
     public String toString(){
-        return "LEASE" + super.toString() + "|" + expectEndingValue + " | " + leaseFee + "|" + totalPrice + " | " + monthlyPayment;
+        setContractType("LEASE");
+        return this.contractType +
+                "|" + this.date +
+                "|" + this.customerName +
+                "|" + this.customerEmail +
+                "|" + this.vehicleSold.getVin() +
+                "|" + this.vehicleSold.getYear() +
+                "|" + this.vehicleSold.getVehicleType() +
+                "|" + this.vehicleSold.getColor() +
+                "|" + this.vehicleSold.getOdometer() +
+                "|" + this.vehicleSold.getPrice() +
+                "|" + this.expectEndingValue +
+                "|" + this.leaseFee +
+                "|" + this.totalPrice +
+                "|" + this.monthlyPayment + "\n";
+
     }
 }
 

@@ -8,17 +8,17 @@ import com.yearup.dealership.contract.SalesContract;
 import com.yearup.dealership.filemanager.ContractFileManager;
 import com.yearup.dealership.filemanager.DealershipFileManager;
 
+import java.util.ArrayList;
+
 public class UI {
     public static String inventoryFileName = "inventory.csv";
     public static String contactFileName = "contracts.csv";
 
     public Dealership currentDealership;
-    public Contract contracts;
-
+    public ArrayList<Contract> contracts = ContractFileManager.getContractsFromCSV(contactFileName);
 
     public UI(){
         currentDealership = DealershipFileManager.getFromCSV(inventoryFileName);
-        contracts = ContractFileManager.getFromCSV(contactFileName);
     }
 
     public void display(){
@@ -58,23 +58,19 @@ public class UI {
                 case 8 -> processAddVehicleRequest();
                 case 9 -> processRemoveVehicleRequest();
                 case 10 -> processContractRequest();
-                case 11 -> processDisplayContract();
+                case 11 -> processShowAllContracts();
                 case 0 -> System.exit(0);
                 default -> System.out.println("Invalid selection. Please try again.");
             }
         }
     }
 
-    private void processContractRequest(){
-        contracts.processTypeOfContract();
-    }
     private void processRemoveVehicleRequest() {
         System.out.println("Processing vehicle remove request");
         // int vin = Console.PromptForInt("Enter vin number");
         // currentDealership.removeVehicleFromInventory(vin);
         currentDealership.removeVehicleFromInventory();
     }
-
     //move this method to the Dealership class
     private void processAddVehicleRequest() {
 
@@ -85,7 +81,6 @@ public class UI {
         DealershipFileManager.saveToCSV(currentDealership, inventoryFileName);
 
     }
-
     private void processGetByVehicleTypeRequest() {
         String vehicleType = Console.PromptForString("Enter vehicle type (Sedan, Truck): ");
 
@@ -93,7 +88,6 @@ public class UI {
             displayVehicle(vehicle);
         }
     }
-
     private void processGetByMileageRequest() {
         int min = Console.PromptForInt("Enter min: ");
         int max = Console.PromptForInt("Enter max: ");
@@ -103,7 +97,6 @@ public class UI {
             displayVehicle(vehicle);
         }
     }
-
     private void processGetByColorRequest() {
         String color = Console.PromptForString("Enter color for vehicle: ");
 
@@ -112,7 +105,6 @@ public class UI {
             displayVehicle(vehicle);
         }
     }
-
     private void processGetByYearRequest() {
         int min = Console.PromptForInt("Enter min: ");
         int max = Console.PromptForInt("Enter max: ");
@@ -121,7 +113,6 @@ public class UI {
             displayVehicle(vehicle);
         }
     }
-
     private void processGetByMakeModelRequest() {
         String make = Console.PromptForString("Enter make for vehicle: ");
         String model = Console.PromptForString("Enter model for vehicle: ");
@@ -129,7 +120,6 @@ public class UI {
             displayVehicle(vehicle);
         }
     }
-
     private void processGetByPriceRequest() {
         double min = Console.PromptForDouble("Enter min: ");
         double max = Console.PromptForDouble("Enter max: ");
@@ -137,26 +127,27 @@ public class UI {
             displayVehicle(vehicle);
         }
     }
-
-
     public void processGetAllVehiclesRequest(){
         for(Vehicle vehicle : currentDealership.getInventory()){
             displayVehicle(vehicle);
         }
     }
-
-    public void processDisplayContract(){
-        for(Contract c : contracts.getListOfContracts())
-            displayContracts(c);
-    }
-    public void displayContracts(Contract c){
-        System.out.println(c);
-    }
-
     public void displayVehicle(Vehicle vehicle){
-        //displayHeader();
-
+        displayHeader();
         System.out.println(vehicle);
+    }
+
+    private void processContractRequest(){
+      //  contract.processTypeOfContract();
+    }
+    public void processShowAllContracts(){
+     printContracts(contracts);
+    }
+
+    public static void printContracts(ArrayList<Contract> contractsList) {
+        for (Contract contract : contractsList) {
+            System.out.println(contract);  // This calls contract.toString() and prints without brackets or commas
+        }
     }
 
     public void displayHeader() {
