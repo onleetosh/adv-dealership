@@ -12,15 +12,10 @@ import java.util.ArrayList;
 
 public class ContractFileManager {
 
-    ArrayList<Contract> contracts;
-
-    public ContractFileManager(ArrayList<Contract> contracts) {
-        this.contracts = getContractsFromCSV(UI.contactFileName);
-    }
-
+   // ArrayList<Contract> contracts = getContractsFromCSV(UI.contactFileName);;
 
     public static ArrayList<Contract> getContractsFromCSV(String file) {
-        ArrayList<Contract> contractsList = new ArrayList<>();  // Initialize ArrayList for contracts
+        ArrayList<Contract> contracts = new ArrayList<>();  // Initialize ArrayList for contracts
 
         try  {
             BufferedReader bf = new BufferedReader(new FileReader(file));
@@ -29,84 +24,10 @@ public class ContractFileManager {
 
             while ((line = bf.readLine()) != null) {
                 String[] tokens = line.split("\\|");
-
-                // Parse a SALE contract
                 if (tokens.length == 18) {
-                    String contractType = tokens[0];
-                    String date = tokens[1];
-                    String name = tokens[2];
-                    String email = tokens[3];
-
-                    int vin = Integer.parseInt(tokens[4]);
-                    int year = Integer.parseInt(tokens[5]);
-                    String make = tokens[6];
-                    String model = tokens[7];
-                    String vehicleType = tokens[8];
-                    String color = tokens[9];
-                    int odometer = Integer.parseInt(tokens[10]);
-                    double price = Double.parseDouble(tokens[11]);
-                    Vehicle vehicleSold = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
-
-                    double salesTax = Double.parseDouble(tokens[12]);
-                    double recordingFee = Double.parseDouble(tokens[13]);
-                    double processingFee = Double.parseDouble(tokens[14]);
-                    double totalPrice = Double.parseDouble(tokens[15]);
-
-                    boolean isFinance = Boolean.parseBoolean(tokens[16]);
-                    double payments = Double.parseDouble(tokens[17]);
-
-                    Contract contract = new SalesContract(
-                            contractType,
-                            date,
-                            name,
-                            email,
-                            vehicleSold,
-                            salesTax,
-                            processingFee,
-                            recordingFee,
-                            totalPrice,
-                            isFinance,
-                            payments
-                    );
-
-                    contractsList.add(contract);  // Add to the list
-
-                }
-                // Parsing a LEASE contract
-                else if (tokens.length == 16) {
-                    String contractType = tokens[0];
-                    String date = tokens[1];
-                    String name = tokens[2];
-                    String email = tokens[3];
-
-                    int vin = Integer.parseInt(tokens[4]);
-                    int year = Integer.parseInt(tokens[5]);
-                    String make = tokens[6];
-                    String model = tokens[7];
-                    String vehicleType = tokens[8];
-                    String color = tokens[9];
-                    int odometer = Integer.parseInt(tokens[10]);
-                    double price = Double.parseDouble(tokens[11]);
-                    Vehicle vehicleSold = new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
-
-                    double endValue = Double.parseDouble(tokens[12]);
-                    double leaseFee = Double.parseDouble(tokens[13]);
-                    double totalPrice = Double.parseDouble(tokens[14]);
-                    double payments = Double.parseDouble(tokens[15]);
-
-                    Contract contract = new LeaseContract(
-                            contractType,
-                            date,
-                            name,
-                            email,
-                            vehicleSold,
-                            endValue,
-                            leaseFee,
-                            totalPrice,
-                            payments
-                    );
-
-                    contractsList.add(contract);  // Add to the list
+                    contracts.add(parseSalesContract(tokens));
+                } else if (tokens.length == 16) {
+                    contracts.add(parseLeaseContract(tokens));
                 }
             } bf.close();
 
@@ -114,9 +35,8 @@ public class ContractFileManager {
             e.printStackTrace();  // Print stack trace for debugging
         }
 
-        return contractsList;
+        return contracts;
     }
-
 
 
     /**
@@ -133,11 +53,39 @@ public class ContractFileManager {
             } else if (contract instanceof LeaseContract) {
                 bw.write(encodeLeaseContractFormat((LeaseContract) contract));
             }
-            bw.newLine(); // Ensure each contract is on a new line
+            bw.close(); // Close the BufferedWriter
         } catch (Exception e) {
             System.out.println("File write error");
             e.printStackTrace();
         }
+    }
+
+    private static SalesContract parseSalesContract(String[] tokens) {
+        // Extract sales contract details from tokens
+        Vehicle vehicleSold = new Vehicle(
+                Integer.parseInt(tokens[4]),
+                Integer.parseInt(tokens[5]),
+                tokens[6],
+                tokens[7],
+                tokens[8],
+                tokens[9],
+                Integer.parseInt(tokens[10]),
+                Double.parseDouble(tokens[11])
+        );
+
+        return new SalesContract(
+                tokens[0],
+                tokens[1],
+                tokens[2],
+                tokens[3],
+                vehicleSold,
+                Double.parseDouble(tokens[12]),
+                Double.parseDouble(tokens[13]),
+                Double.parseDouble(tokens[14]),
+                Double.parseDouble(tokens[15]),
+                Boolean.parseBoolean(tokens[16]),
+                Double.parseDouble(tokens[17])
+        );
     }
 
     private static String encodeSaleContractFormat(SalesContract sales){
@@ -160,8 +108,7 @@ public class ContractFileManager {
                 "|" + sales.getMonthlyPayment();
      }
 
-
-    private LeaseContract parseLeaseContract(String[] tokens) {
+    private static LeaseContract parseLeaseContract(String[] tokens) {
         // Extract lease contract details from tokens
         Vehicle vehicleSold = new Vehicle(
                 Integer.parseInt(tokens[4]),

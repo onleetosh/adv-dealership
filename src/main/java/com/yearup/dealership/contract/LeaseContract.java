@@ -95,7 +95,10 @@ public class LeaseContract extends Contract {
         int months = 36;
         double interestRate = 4.0/100;
 
-        double payment= vehicleSold.getPrice();
+        double monthlyInterestRate = interestRate / 12;
+
+        double vehiclePrice= vehicleSold.getPrice();
+        double payment = vehiclePrice * monthlyInterestRate;
 
         return payment;
     }

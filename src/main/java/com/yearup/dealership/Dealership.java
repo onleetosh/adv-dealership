@@ -79,6 +79,15 @@ public class Dealership {
         inventory.remove(remove);
     }
 
+    public ArrayList<Vehicle> searchVehicleByVin(int vin) {
+        ArrayList<Vehicle> result = new ArrayList<>();
+        for (Vehicle vehicle : inventory){
+            if(vehicle.getVin() == vin) {
+                result.add(vehicle);
+            }
+        }
+        return result;
+    }
 
     public ArrayList<Vehicle> getVehiclesByPrice(double min, double max){
         ArrayList<Vehicle> result = new ArrayList<Vehicle>();

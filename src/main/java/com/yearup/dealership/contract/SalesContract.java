@@ -161,13 +161,9 @@ public class SalesContract extends Contract {
 
     @Override
     public String toString() {
-        String financeStatus = " ";
-        if(isFinance() == true){
-            financeStatus = "YES";
-        }
-        else if (isFinance() == false){
-            financeStatus = "NO";
-        }
+
+        String financeStatus = isFinance ? "YES" : "NO";
+
         setContractType("SALES");
         return this.contractType +
                 "|" + this.date +

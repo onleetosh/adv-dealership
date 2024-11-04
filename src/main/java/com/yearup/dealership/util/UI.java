@@ -15,10 +15,11 @@ public class UI {
     public static String contactFileName = "contracts.csv";
 
     public Dealership currentDealership;
-    public ArrayList<Contract> contracts = ContractFileManager.getContractsFromCSV(contactFileName);
+    public ArrayList<Contract> contracts;
 
     public UI(){
         currentDealership = DealershipFileManager.getFromCSV(inventoryFileName);
+        contracts = ContractFileManager.getContractsFromCSV(contactFileName);
     }
 
     public void display(){
@@ -37,6 +38,7 @@ public class UI {
                 9 - Remove a vehicle
                 10 - Sell/Lease a vehicle
                 11 - Display Contracts
+           
                 0 - Quit
 
                 >>>\s""";
@@ -70,6 +72,7 @@ public class UI {
         // int vin = Console.PromptForInt("Enter vin number");
         // currentDealership.removeVehicleFromInventory(vin);
         currentDealership.removeVehicleFromInventory();
+        DealershipFileManager.saveToCSV(currentDealership, inventoryFileName);
     }
     //move this method to the Dealership class
     private void processAddVehicleRequest() {
@@ -81,6 +84,8 @@ public class UI {
         DealershipFileManager.saveToCSV(currentDealership, inventoryFileName);
 
     }
+
+
     private void processGetByVehicleTypeRequest() {
         String vehicleType = Console.PromptForString("Enter vehicle type (Sedan, Truck): ");
 
@@ -138,13 +143,18 @@ public class UI {
     }
 
     private void processContractRequest(){
-
+        System.out.println("Processing contract request");
+        for (Contract contract : contracts) {
+            contract.addNewContract();
+            ContractFileManager.saveContractToCSV(contract, contactFileName);
+            break;
+        }
     }
     public void processShowAllContracts(){
-     printContracts(contracts);
+     displayContracts(contracts);
     }
 
-    public static void printContracts(ArrayList<Contract> contractsList) {
+    public static void displayContracts(ArrayList<Contract> contractsList) {
         for (Contract contract : contractsList) {
             System.out.println(contract);  // This calls contract.toString() and prints without brackets or commas
         }

@@ -2,7 +2,9 @@ package com.yearup.dealership;
 
 import com.yearup.dealership.contract.LeaseContract;
 import com.yearup.dealership.contract.SalesContract;
+import com.yearup.dealership.filemanager.ContractFileManager;
 import com.yearup.dealership.util.Console;
+import com.yearup.dealership.util.UI;
 
 import java.util.ArrayList;
 
@@ -18,7 +20,7 @@ public abstract class Contract {
     protected String customerName;
     protected String customerEmail;
     protected Vehicle vehicleSold;
-    protected double totalPrice; // amount paid before monthly
+    protected double totalPrice;
     protected double monthlyPayment;
 
     /**
@@ -118,82 +120,82 @@ public abstract class Contract {
     }
 
     //TODO: perform calculations to get monthly payment
-    public void processTypeOfContract(){
+    public void addNewContract() {
+        ArrayList<Contract> newContract = new ArrayList<>();
 
-        String choice = Console.PromptForString("enter [S] to Sell or [L] to Leasing vehicle");
-        if (choice.equalsIgnoreCase("S")){
+            String choice = Console.PromptForString("Enter [S] to Sell or [L] to Lease vehicle");
+            String contractType = choice.equalsIgnoreCase("S") ? "SALES" : "LEASE";
 
-            setContractType("SALES");
             String date = Console.PromptForString("Enter date (MM-dd-YYYY): ");
-            String name = Console.PromptForString("Enter your name" );
+            String name = Console.PromptForString("Enter your name: ");
             String email = Console.PromptForString("Enter e-mail address: ");
 
-            System.out.println("Vehicle being sold.");
-            int vin = Console.PromptForInt("Enter Vin: ");
-            int year = Console.PromptForInt("Enter year: ");
-            String make = Console.PromptForString("Enter make: ");
-            String model = Console.PromptForString("Enter model: ");
-            String vehicleType = Console.PromptForString("Enter vehicle type: ");
-            String color = Console.PromptForString("Enter color:  ");
-            int odometer = Console.PromptForInt("Enter odometer: ");
-            double price = Console.PromptForDouble("Enter price: ");
-            Vehicle vehicleSold = new Vehicle(vin,year, make, model, vehicleType, color, odometer, price);
+            Vehicle vehicle = getVehicleDetails();
+            Contract contract;
+            if (contractType.equals("SALES")) {
+               contract = processSalesContract(date, name, email, vehicle);
+            } else {
+                contract = processLeaseContract(date, name, email, vehicle);
+            }
+            newContract.add(contract);
 
-            double totalPrice = Console.PromptForDouble("Enter total price: ");
-            double monthlyPayment = Console.PromptForDouble("Enter monthly payment: ");
-            double salesTax = Console.PromptForDouble("Enter sales tax");
-            double recordingFee = Console.PromptForDouble("Enter recording fee");
-            double processingFee = Console.PromptForDouble("Enter processing fee");
-            boolean finance = Console.PromptForYesNo("Interested in financing?");
+    }
 
-            SalesContract newSales = new SalesContract(
-                    contractType,
-                    date,
-                    name,
-                    email,
-                    vehicleSold,
-                    salesTax,
-                    recordingFee,
-                    processingFee,
-                    totalPrice,
-                    finance,
-                    monthlyPayment);
+    private Vehicle getVehicleDetails() {
+        System.out.println("Enter vehicle details:");
+        int vin = Console.PromptForInt("Enter Vin: ");
+        int year = Console.PromptForInt("Enter year: ");
+        String make = Console.PromptForString("Enter make: ");
+        String model = Console.PromptForString("Enter model: ");
+        String vehicleType = Console.PromptForString("Enter vehicle type: ");
+        String color = Console.PromptForString("Enter color: ");
+        int odometer = Console.PromptForInt("Enter odometer: ");
+        double price = Console.PromptForDouble("Enter price: ");
+        return new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
+    }
 
+    private SalesContract processSalesContract(String date, String name, String email, Vehicle vehicle) {
+        double totalPrice = getTotalPrice();
+        double monthlyPayment = getMonthlyPayment();
+        double salesTax = vehicleSold.getPrice() * (5.0/100);
+        double processingFee = (vehicleSold.getPrice() < 10000) ? (295) : (495);
+        double recordingFee = 100;
+        boolean finance = Console.PromptForYesNo("Interested in financing?");
 
-        }
-        else if (choice.equalsIgnoreCase("L")){
+        SalesContract newSales = new SalesContract(
+                "SALES",
+                date,
+                name,
+                email,
+                vehicle,
+                salesTax,
+                recordingFee,
+                processingFee,
+                totalPrice,
+                finance,
+                monthlyPayment);
 
-            setContractType("LEASE");
-            String date = Console.PromptForString("Enter date (MM-dd-YYYY): ");
-            String name = Console.PromptForString("Enter your name" );
-            String email = Console.PromptForString("Enter e-mail address: ");
+        return  newSales;
+    }
 
-            System.out.println("Vehicle being Leased.");
-            int vin = Console.PromptForInt("Enter Vin: ");
-            int year = Console.PromptForInt("Enter year: ");
-            String make = Console.PromptForString("Enter make: ");
-            String model = Console.PromptForString("Enter model: ");
-            String vehicleType = Console.PromptForString("Enter vehicle type: ");
-            String color = Console.PromptForString("Enter color:  ");
-            int odometer = Console.PromptForInt("Enter odometer: ");
-            double price = Console.PromptForDouble("Enter price: ");
-            Vehicle vehicleSold = new Vehicle(vin,year, make, model, vehicleType, color, odometer, price);
+    private  LeaseContract processLeaseContract(String date, String name, String email, Vehicle vehicle) {
+      double expectEndValue = vehicleSold.getPrice() * (50/100);
+      double leaseFee =  vehicleSold.getPrice() * (7.0/100);
+      double total = getTotalPrice();
+      double monthlyPayment = getMonthlyPayment();
 
-            double totalPrice = Console.PromptForDouble("Enter total price: ");
-            double monthlyPayment = Console.PromptForDouble("Enter monthly payment: ");
-            double expectEndValue = Console.PromptForDouble("Expect end value");
-            double leaseFee = Console.PromptForDouble("");
-            LeaseContract newLease = new LeaseContract(
-                    contractType,
-                    date,
-                    name,
-                    email,
-                    vehicleSold,
-                    totalPrice,
-                    monthlyPayment,
-                    expectEndValue,
-                    leaseFee);
-        }
+        LeaseContract newLease = new LeaseContract(
+                "LEASE",
+                date,
+                name,
+                email,
+                vehicle,
+                expectEndValue,
+                leaseFee,
+                total,
+                monthlyPayment);
+
+        return newLease;
     }
 
 }
