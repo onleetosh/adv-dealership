@@ -138,7 +138,7 @@ public class UI {
     }
 
     private void processContractRequest(){
-      //  contract.processTypeOfContract();
+
     }
     public void processShowAllContracts(){
      printContracts(contracts);

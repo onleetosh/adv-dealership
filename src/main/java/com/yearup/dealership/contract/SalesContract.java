@@ -21,8 +21,6 @@ public class SalesContract extends Contract {
                          String customerName,
                          String customerEmail,
                          Vehicle vehicleSold,
-                         // double totalPrice,
-                         //double monthlyPayment,
                          double salesTax,
                          double recordingFee,
                          double processingFee,
@@ -177,6 +175,8 @@ public class SalesContract extends Contract {
                 "|" + this.customerEmail +
                 "|" + this.vehicleSold.getVin() +
                 "|" + this.vehicleSold.getYear() +
+                "|" + this.vehicleSold.getMake() +
+                "|" + this.vehicleSold.getModel() +
                 "|" + this.vehicleSold.getVehicleType() +
                 "|" + this.vehicleSold.getColor() +
                 "|" + this.vehicleSold.getOdometer() +
@@ -186,7 +186,7 @@ public class SalesContract extends Contract {
                 "|" + this.recordingFee +
                 "|" + this.totalPrice +
                 "|" + financeStatus +
-                "|" + this.monthlyPayment + "\n";
+                "|" + this.monthlyPayment;
     }
 
 }

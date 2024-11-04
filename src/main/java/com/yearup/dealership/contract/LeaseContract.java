@@ -109,6 +109,8 @@ public class LeaseContract extends Contract {
                 "|" + this.customerEmail +
                 "|" + this.vehicleSold.getVin() +
                 "|" + this.vehicleSold.getYear() +
+                "|" + this.vehicleSold.getMake() +
+                "|" + this.vehicleSold.getModel() +
                 "|" + this.vehicleSold.getVehicleType() +
                 "|" + this.vehicleSold.getColor() +
                 "|" + this.vehicleSold.getOdometer() +
@@ -116,7 +118,7 @@ public class LeaseContract extends Contract {
                 "|" + this.expectEndingValue +
                 "|" + this.leaseFee +
                 "|" + this.totalPrice +
-                "|" + this.monthlyPayment + "\n";
+                "|" + this.monthlyPayment;
 
     }
 }
