@@ -1,3 +1,5 @@
-SALE20210928|Dana Wyatt|dana@texas.com|10112|1993|Ford|Explorer|SUV|Red|525123|995.0|49.75|100.0|295.0|1439.75|true|0.5441406249999999
-LEASE20210928|Zachary Westly|zach@texas.com|37846|2021|Chevrolet|Silverado|truck|Black|2750|31995.0|18337.15|541.39|18878.54|106.65
-LEASE20210928|Tashi Thompson|tthompson@texas.com|37846|2024|Ford|Mustang|Sport|Red|1050|31995.0|18337.15|541.39|18878.54|106.65
+SALE|20210928|Dana Wyatt|dana@texas.com|10112|1993|Ford|Explorer|SUV|Red|525123|995.00|49.75|100.00|295.00|1439.75|NO|0.00
+LEASE|20210928|Zachary Westly|zach@texas.com|37846|2021|Chevrolet|Silverado|truck|Black|2750|31995.00|15997.50|2239.65|18337.15|541.39
+LEASE|10202024|tashi thompson|tashi.thompson@gmail.com|10133|2008|Ford|F-150|Truck|Red|100000|22000.0|0.0|0.0|0.0|0.0
+SALE|10102022|zoro|luffy@king.jump|10126|2022|Tesla|Model 3|Sedan|White|10000|45000.0|2250.0|100.0|495.0|47845.0|true|0.0
+LEASE|20102002|luffy|luffy@monkey.d|10133|2008|Ford|F-150|Truck|Red|100000|22000.0|11000.0|1540.0000000000002|12540.0|370.23077198581177

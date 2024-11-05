@@ -1,7 +1,9 @@
 package com.yearup.dealership.contract;
 
-import com.yearup.dealership.Calculation;
+import com.yearup.dealership.Contract;
 import com.yearup.dealership.Vehicle;
+import com.yearup.dealership.util.Calculation;
+
 
 public class LeaseContract extends Contract {
 
@@ -9,7 +11,7 @@ public class LeaseContract extends Contract {
      * Lease Contract Information
      */
     private double expectEndingValue; //  e = p * (50/100)
-    private double leaseFee; // f = p * (7/100)'
+    private double leaseFee; // f = p * (7/100)
 
     private double expectEndingValuePercentage = 0.5;
     private double leaseFeePercentage = 0.07;
@@ -30,8 +32,8 @@ public class LeaseContract extends Contract {
                          double expectEndingValue,
                          double leaseFee) {
         super(date, customerName, customerEmail, vehicleSold);
-        this.expectEndingValue = expectEndingValue;
         this.leaseFee = leaseFee;
+        this.expectEndingValue = expectEndingValue;
     }
 
     public double getExpectEndingValue() {
@@ -84,47 +86,36 @@ public class LeaseContract extends Contract {
      */
     //all leases are financed at 4.0% for 36 mos
     @Override
-    public double getTotalPrice(){
+    public double getTotalPrice() {
         return expectEndingValue + leaseFee;
     }
+
     @Override
-    public double getMonthlyPayment(){
+    public double getMonthlyPayment() {
         double financeRate = 0.04;
         double financeTerm = 36;
         return Calculation.calculateLoanPayment(getTotalPrice(), financeRate, financeTerm);
     }
 
-    public static LeaseContract processLeaseContract(String date, String name, String email, Vehicle vehicle) {
-
-        LeaseContract newLease = new LeaseContract(
-                date,
-                name,
-                email,
-                vehicle);
-
-        return newLease;
-    }
-
     @Override
-    public String toString(){
-        return "LEASE" +
-                "|" + this.date +
-                "|" + this.customerName +
-                "|" + this.customerEmail +
-                "|" + this.vehicleSold.getVin() +
-                "|" + this.vehicleSold.getYear() +
-                "|" + this.vehicleSold.getMake() +
-                "|" + this.vehicleSold.getModel() +
-                "|" + this.vehicleSold.getVehicleType() +
-                "|" + this.vehicleSold.getColor() +
-                "|" + this.vehicleSold.getOdometer() +
-                "|" + this.vehicleSold.getPrice() +
-                "|" + this.expectEndingValue +
-                "|" + this.leaseFee +
-                "|" + getTotalPrice() +
-                "|" + getMonthlyPayment() + "\n";
-
+    public String toString() {
+        // 0  1  2  3  4  5  6  7  8  9  10  11   12   13   14  15
+        return String.format("LEASE|%s|%s|%s|%d|%d|%s|%s|%s|%s|%d|%.2f|%.2f|%.2f|%.2f|%.2f",
+                this.date,
+                this.customerName,
+                this.customerEmail,
+                this.vehicleSold.getVin(),
+                this.vehicleSold.getYear(),
+                this.vehicleSold.getMake(),
+                this.vehicleSold.getModel(),
+                this.vehicleSold.getVehicleType(),
+                this.vehicleSold.getColor(),
+                this.vehicleSold.getOdometer(),
+                this.vehicleSold.getPrice(),
+                this.expectEndingValue,
+                this.leaseFee,
+                getTotalPrice(),
+                getMonthlyPayment());
     }
 }
-
 
