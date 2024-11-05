@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.yearup.dealership.Contract;
 import com.yearup.dealership.Vehicle;
+import com.yearup.dealership.util.Calculation;
 
 public class SalesContract extends Contract {
 
@@ -118,33 +119,24 @@ public class SalesContract extends Contract {
 
      */
     // 4.25% for 48mos if the price is $10k+ , else 5.25% for 24mos
+
     @Override
     public double getTotalPrice(){
-        return getVehicleSold().getPrice() + this.salesTax + this.processingFee + this.recordingFee;
+        return getVehicleSold().getPrice() + salesTax + processingFee + recordingFee;
     }
 
     @Override
     public double getMonthlyPayment(){
-        double payment = 0;
-        boolean finance = true;
-        if(finance) {
-            int months = 0;
-            double interestRate = 0;
-            if(months >= 48 && vehicleSold.getPrice() > 10000){
-                interestRate = 4.25 / 100;
-                payment = ((vehicleSold.getPrice() / 2) * interestRate) /48;
-            }
-            else if ( months <= 24 && vehicleSold.getPrice() < 10000) {
-                interestRate = 5.25 / 100;
-                payment = ((vehicleSold.getPrice() / 2) * interestRate) /48;
-            }
-            return payment;
+
+        if (isFinance) {
+            double financeRate = (getVehicleSold().getPrice() < 10000) ? 0.0525 : 0.0425;
+            double financeTerm = (getVehicleSold().getPrice() < 10000) ? 24 : 48;
+            return Calculation.calculateLoanPayment(getTotalPrice(), financeRate, financeTerm);
         }
         else {
-            setFinance(false);
-            System.out.println("Finance declined");
             return 0;
         }
+
     }
 
     @Override
