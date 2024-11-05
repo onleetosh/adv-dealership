@@ -115,7 +115,7 @@ public class ContractFileManager {
                 "|" + sales.getProcessingFee() +
                 "|" + sales.getTotalPrice() +
                 "|" + sales.isFinance() +
-                "|" + sales.getMonthlyPayment();
+                "|" + sales.getMonthlyPayment() + "\n";
     }
 
     private static LeaseContract parseLeaseContract(String[] tokens) {
@@ -156,7 +156,7 @@ public class ContractFileManager {
                 "|" + lease.getExpectEndingValue() +
                 "|" + lease.getLeaseFee() +
                 "|" + lease.getTotalPrice() +
-                "|" + lease.getMonthlyPayment();
+                "|" + lease.getMonthlyPayment() + "\n";
     }
 
 }
