@@ -1,6 +1,7 @@
 package com.yearup.dealership;
 
 import com.yearup.dealership.util.ColorCodes;
+import com.yearup.dealership.util.Console;
 
 public class Vehicle {
     private int vin;
@@ -54,6 +55,19 @@ public class Vehicle {
 
     public double getPrice() {
         return price;
+    }
+
+    public static Vehicle getVehicleDetails() {
+        System.out.println("Enter vehicle details:");
+        int vin = Console.PromptForInt("Enter Vin: ");
+        int year = Console.PromptForInt("Enter year: ");
+        String make = Console.PromptForString("Enter make: ");
+        String model = Console.PromptForString("Enter model: ");
+        String vehicleType = Console.PromptForString("Enter vehicle type: ");
+        String color = Console.PromptForString("Enter color: ");
+        int odometer = Console.PromptForInt("Enter odometer: ");
+        double price = Console.PromptForDouble("Enter price: ");
+        return new Vehicle(vin, year, make, model, vehicleType, color, odometer, price);
     }
 
     @Override

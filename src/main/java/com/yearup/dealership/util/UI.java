@@ -1,6 +1,6 @@
 package com.yearup.dealership.util;
 
-import com.yearup.dealership.Contract;
+import com.yearup.dealership.contract.Contract;
 import com.yearup.dealership.Dealership;
 import com.yearup.dealership.Vehicle;
 import com.yearup.dealership.contract.LeaseContract;
@@ -20,6 +20,7 @@ public class UI {
     public UI(){
         currentDealership = DealershipFileManager.getFromCSV(inventoryFileName);
         contracts = ContractFileManager.getContractsFromCSV(contactFileName);
+        displayContracts(contracts);
     }
 
     public void display(){
@@ -59,12 +60,33 @@ public class UI {
                 case 7 -> processGetAllVehiclesRequest();
                 case 8 -> processAddVehicleRequest();
                 case 9 -> processRemoveVehicleRequest();
-                case 10 -> processContractRequest();
-                case 11 -> processShowAllContracts();
+                case 10 -> processSellOrLeaseRequest();
                 case 0 -> System.exit(0);
                 default -> System.out.println("Invalid selection. Please try again.");
             }
         }
+    }
+
+    public void processSellOrLeaseRequest(){
+        ArrayList<Contract> newContract = new ArrayList<>();
+
+        String choice = Console.PromptForString("Enter [S] to Sell or [L] to Lease vehicle");
+        String contractType = choice.equalsIgnoreCase("S") ? "SALES" : "LEASE";
+
+        String date = Console.PromptForString("Enter date (MM-dd-YYYY): ");
+        String name = Console.PromptForString("Enter your name: ");
+        String email = Console.PromptForString("Enter e-mail address: ");
+
+        Vehicle vehicle = Vehicle.getVehicleDetails();
+        Contract contract = null;
+        if (contractType.equals("SALES")) {
+            contract = SalesContract.processSalesContract(date, name, email, vehicle);
+        } else {
+            contract = LeaseContract.processLeaseContract(date, name, email, vehicle);
+        }
+        newContract.add(contract);
+        ContractFileManager.saveContractToCSV(newContract, contactFileName);
+
     }
 
     private void processRemoveVehicleRequest() {
@@ -142,11 +164,20 @@ public class UI {
         System.out.println(vehicle);
     }
 
+
+    public void ContractRequest(){
+        System.out.println("Processing contract request");
+        for(int i= 0; i< contracts.size(); i++) {
+            contracts.get(i).addNewContract();
+            ContractFileManager.saveContractToCSV(contracts, contactFileName);
+            break;
+        }
+    }
     private void processContractRequest(){
         System.out.println("Processing contract request");
         for (Contract contract : contracts) {
             contract.addNewContract();
-            ContractFileManager.saveContractToCSV(contract, contactFileName);
+            ContractFileManager.saveContractToCSV(contracts, contactFileName);
             break;
         }
     }
@@ -154,8 +185,8 @@ public class UI {
      displayContracts(contracts);
     }
 
-    public static void displayContracts(ArrayList<Contract> contractsList) {
-        for (Contract contract : contractsList) {
+    public void displayContracts(ArrayList<Contract> contracts) {
+        for (Contract contract : contracts) {
             System.out.println(contract);  // This calls contract.toString() and prints without brackets or commas
         }
     }

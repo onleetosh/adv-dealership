@@ -1,38 +1,48 @@
 package com.yearup.dealership.contract;
 
-import com.yearup.dealership.Contract;
+import com.yearup.dealership.Calculation;
 import com.yearup.dealership.Vehicle;
 import com.yearup.dealership.util.Console;
-
-import java.util.ArrayList;
 
 public class SalesContract extends Contract {
 
     /**
      * Sales Contract Information
      */
+
+    private final double salesTaxPercentage = 0.05;
     private double salesTax; // %5
     private double recordingFee; // $100.00
     private double processingFee; // a fee of $295 if vehicle under $10k, else $495
     private boolean isFinance; // do they want to finance (yes/no)
 
-    public SalesContract(String contractType,
-                         String date,
+    public SalesContract(String date,
+                         String customerName,
+                         String customerEmail,
+                         Vehicle vehicleSold,
+                         boolean isFinance) {
+        super( date, customerName, customerEmail, vehicleSold);
+        this.salesTax = vehicleSold.getPrice() * salesTaxPercentage;
+        this.recordingFee = 100;
+        this.processingFee = (vehicleSold.getPrice() < 10000) ? 295 : 495;
+        this.isFinance = isFinance;
+    }
+
+    public SalesContract(String date,
                          String customerName,
                          String customerEmail,
                          Vehicle vehicleSold,
                          double salesTax,
                          double recordingFee,
                          double processingFee,
-                         double totalPrice,
-                         boolean isFinance,
-                         double monthlyPayment
-    ) {
-        super(contractType, date, customerName, customerEmail, vehicleSold, totalPrice, monthlyPayment);
+                         boolean isFinance) {
+        super(date, customerName, customerEmail, vehicleSold);
         this.salesTax = salesTax;
         this.recordingFee = recordingFee;
         this.processingFee = processingFee;
+        //skip total cost
         this.isFinance = isFinance;
+        //skip monthly payment
     }
 
     public double getRecordingFee() {
@@ -67,12 +77,6 @@ public class SalesContract extends Contract {
         this.processingFee = processingFee;
     }
 
-    public ArrayList<Contract> getAllSalesContracts(){
-        return listOfContracts;
-    }
-    public void addSalesContractToList(SalesContract s){
-        listOfContracts.add(s); //s for sales contract
-    }
 
     /*
     public void processSalesContract(){
@@ -116,56 +120,45 @@ public class SalesContract extends Contract {
     // 4.25% for 48mos if the price is $10k+ , else 5.25% for 24mos
     @Override
     public double getTotalPrice(){
-        double price = 0;
-
-        if (vehicleSold.getPrice() < 10000) {
-            setSalesTax((5.0/100) * vehicleSold.getPrice());
-            setRecordingFee(100);
-            setProcessingFee(295);
-            price = vehicleSold.getPrice() + salesTax + recordingFee + processingFee;
-        }
-
-        else if(vehicleSold.getPrice() > 10000) {
-            setSalesTax((5.0/100) * vehicleSold.getPrice());
-            setRecordingFee(100);
-            setRecordingFee(495);
-            price = vehicleSold.getPrice() + salesTax + recordingFee + processingFee;
-        }
-        return price;
+      return getVehicleSold().getPrice() + salesTax + processingFee + recordingFee;
     }
 
     @Override
     public double getMonthlyPayment(){
-        double payment = 0;
-        boolean finance = true;
-        if(finance) {
-            setFinance(true);
-            int months = 0;
-            double interestRate = 0;
-            if(months >= 48 && vehicleSold.getPrice() > 10000){
-                interestRate = 4.25 / 100;
-                payment = ((vehicleSold.getPrice() / 2) * interestRate) /48;
-            }
-            else if ( months <= 24 && vehicleSold.getPrice() < 10000) {
-                interestRate = 5.25 / 100;
-                payment = ((vehicleSold.getPrice() / 2) * interestRate) /48;
-            }
-            return payment;
+
+        if (isFinance) {
+            double financeRate = (getVehicleSold().getPrice() < 10000) ? 0.0525 : 0.0425;
+            double financeTerm = (getVehicleSold().getPrice() < 10000) ? 24 : 48;
+            return Calculation.calculateLoanPayment(getTotalPrice(), financeRate, financeTerm);
         }
         else {
-            setFinance(false);
-            System.out.println("Finance declined");
             return 0;
         }
-    }
 
+    }
+    public static SalesContract processSalesContract(String date, String name, String email, Vehicle vehicle) {
+
+        double salesTax = vehicleSold.getPrice() * (5.0/100);
+        double processingFee = (vehicleSold.getPrice() < 10000) ? (295) : (495);
+        double recordingFee = 100;
+        boolean finance = Console.PromptForYesNo("Interested in financing?");
+        SalesContract newSales = new SalesContract(
+                date,
+                name,
+                email,
+                vehicle,
+                salesTax,
+                recordingFee,
+                processingFee,
+                finance);
+        return  newSales;
+    }
     @Override
     public String toString() {
 
         String financeStatus = isFinance ? "YES" : "NO";
 
-        setContractType("SALES");
-        return this.contractType +
+        return "SALES|" +
                 "|" + this.date +
                 "|" + this.customerName +
                 "|" + this.customerEmail +
@@ -180,9 +173,9 @@ public class SalesContract extends Contract {
                 "|" + this.salesTax +
                 "|" + this.processingFee +
                 "|" + this.recordingFee +
-                "|" + this.totalPrice +
+                "|" + getTotalPrice() +
                 "|" + financeStatus +
-                "|" + this.monthlyPayment;
+                "|" + getMonthlyPayment();
     }
 
 }

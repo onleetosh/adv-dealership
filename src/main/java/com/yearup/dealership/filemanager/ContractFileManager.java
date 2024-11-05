@@ -1,11 +1,10 @@
 package com.yearup.dealership.filemanager;
 
-import com.yearup.dealership.Contract;
+import com.yearup.dealership.contract.Contract;
 import com.yearup.dealership.Vehicle;
 
 import com.yearup.dealership.contract.LeaseContract;
 import com.yearup.dealership.contract.SalesContract;
-import com.yearup.dealership.util.UI;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -24,12 +23,18 @@ public class ContractFileManager {
 
             while ((line = bf.readLine()) != null) {
                 String[] tokens = line.split("\\|");
-                if (tokens.length == 18) {
-                    contracts.add(parseSalesContract(tokens));
-                } else if (tokens.length == 16) {
+                if (tokens.length >=16) {
+                    if(tokens[0].equalsIgnoreCase("SALES")){
+                        contracts.add(parseSalesContract(tokens));
+                    }
+                } else if (tokens[0].equalsIgnoreCase("LEASE")) {
                     contracts.add(parseLeaseContract(tokens));
                 }
-            } bf.close();
+                else {
+                    //invalid
+                }
+            }
+            bf.close();
 
         } catch (Exception e) {
             e.printStackTrace();  // Print stack trace for debugging
@@ -39,21 +44,26 @@ public class ContractFileManager {
     }
 
 
+
+
+    //TODO: does not properly save to file
     /**
      * saveContract() method accepts a Contract parameter; instanceOf checks the type of contract
      * before writing file changes
      */
-    public static void saveContractToCSV(Contract contract, String file){
+    public static void saveContractToCSV(ArrayList<Contract> contracts, String file) {
         try {
-            FileWriter fw = new FileWriter(file, true);
+            FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
 
-            if (contract instanceof SalesContract) {
-                bw.write(encodeSaleContractFormat((SalesContract) contract));
-            } else if (contract instanceof LeaseContract) {
-                bw.write(encodeLeaseContractFormat((LeaseContract) contract));
-            }
-            bw.close(); // Close the BufferedWriter
+            for (Contract contract : contracts) {
+                if (contract instanceof SalesContract) {
+                    bw.write(encodeSaleContractFormat((SalesContract) contract));
+                } else if (contract instanceof LeaseContract) {
+                    bw.write(encodeLeaseContractFormat((LeaseContract) contract));
+                }
+            }bw.close();
+
         } catch (Exception e) {
             System.out.println("File write error");
             e.printStackTrace();
@@ -74,7 +84,6 @@ public class ContractFileManager {
         );
 
         return new SalesContract(
-                tokens[0],
                 tokens[1],
                 tokens[2],
                 tokens[3],
@@ -82,10 +91,7 @@ public class ContractFileManager {
                 Double.parseDouble(tokens[12]),
                 Double.parseDouble(tokens[13]),
                 Double.parseDouble(tokens[14]),
-                Double.parseDouble(tokens[15]),
-                Boolean.parseBoolean(tokens[16]),
-                Double.parseDouble(tokens[17])
-        );
+                Boolean.parseBoolean(tokens[16]));
     }
 
     private static String encodeSaleContractFormat(SalesContract sales){
@@ -105,8 +111,8 @@ public class ContractFileManager {
                 "|" + sales.getProcessingFee() +
                 "|" + sales.getTotalPrice() +
                 "|" + sales.isFinance() +
-                "|" + sales.getMonthlyPayment();
-     }
+                "|" + sales.getMonthlyPayment() + "\n";
+    }
 
     private static LeaseContract parseLeaseContract(String[] tokens) {
         // Extract lease contract details from tokens
@@ -122,15 +128,12 @@ public class ContractFileManager {
         );
 
         return new LeaseContract(
-                tokens[0],
                 tokens[1],
                 tokens[2],
                 tokens[3],
                 vehicleSold,
                 Double.parseDouble(tokens[12]),
-                Double.parseDouble(tokens[13]),
-                Double.parseDouble(tokens[14]),
-                Double.parseDouble(tokens[15])
+                Double.parseDouble(tokens[13])
         );
     }
 
@@ -149,7 +152,8 @@ public class ContractFileManager {
                 "|" + lease.getExpectEndingValue() +
                 "|" + lease.getLeaseFee() +
                 "|" + lease.getTotalPrice() +
-                "|" + lease.getMonthlyPayment();
-     }
+                "|" + lease.getMonthlyPayment() + "\n";
+    }
+
 
 }

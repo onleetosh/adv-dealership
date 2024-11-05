@@ -1,10 +1,7 @@
 package com.yearup.dealership.contract;
 
-import com.yearup.dealership.Contract;
+import com.yearup.dealership.Calculation;
 import com.yearup.dealership.Vehicle;
-import com.yearup.dealership.util.Console;
-
-import java.util.ArrayList;
 
 public class LeaseContract extends Contract {
 
@@ -12,18 +9,27 @@ public class LeaseContract extends Contract {
      * Lease Contract Information
      */
     private double expectEndingValue; //  e = p * (50/100)
-    private double leaseFee; // f = p * (7/100)
+    private double leaseFee; // f = p * (7/100)'
 
-    public LeaseContract(String contractType,
-                         String date,
+    private double expectEndingValuePercentage = 0.5;
+    private double leaseFeePercentage = 0.07;
+
+    public LeaseContract(String date,
+                         String customerName,
+                         String customerEmail,
+                         Vehicle vehicleSold) {
+        super(date, customerName, customerEmail, vehicleSold);
+        this.expectEndingValue = vehicleSold.getPrice() * expectEndingValuePercentage;
+        this.leaseFee = vehicleSold.getPrice() * leaseFeePercentage;
+    }
+
+    public LeaseContract(String date,
                          String customerName,
                          String customerEmail,
                          Vehicle vehicleSold,
-                         double totalPrice,
-                         double monthlyPayment,
                          double expectEndingValue,
                          double leaseFee) {
-        super(contractType, date, customerName, customerEmail, vehicleSold, totalPrice, monthlyPayment);
+        super(date, customerName, customerEmail, vehicleSold);
         this.expectEndingValue = expectEndingValue;
         this.leaseFee = leaseFee;
     }
@@ -42,14 +48,6 @@ public class LeaseContract extends Contract {
 
     public void setExpectEndingValue(double expectEndingValue) {
         this.expectEndingValue = expectEndingValue;
-    }
-
-    public ArrayList<Contract> getAllLeaseContracts(){
-        return listOfContracts;
-    }
-
-    public void addLeaseContractToList(LeaseContract l){
-        listOfContracts.add(l); //l for lease contract
     }
 
     /*
@@ -91,22 +89,25 @@ public class LeaseContract extends Contract {
     }
     @Override
     public double getMonthlyPayment(){
+        double financeRate = 0.04;
+        double financeTerm = 36;
+        return Calculation.calculateLoanPayment(getTotalPrice(), financeRate, financeTerm);
+    }
 
-        int months = 36;
-        double interestRate = 4.0/100;
+    public static LeaseContract processLeaseContract(String date, String name, String email, Vehicle vehicle) {
 
-        double monthlyInterestRate = interestRate / 12;
+        LeaseContract newLease = new LeaseContract(
+                date,
+                name,
+                email,
+                vehicle);
 
-        double vehiclePrice= vehicleSold.getPrice();
-        double payment = vehiclePrice * monthlyInterestRate;
-
-        return payment;
+        return newLease;
     }
 
     @Override
     public String toString(){
-        setContractType("LEASE");
-        return this.contractType +
+        return "LEASE" +
                 "|" + this.date +
                 "|" + this.customerName +
                 "|" + this.customerEmail +
@@ -120,8 +121,8 @@ public class LeaseContract extends Contract {
                 "|" + this.vehicleSold.getPrice() +
                 "|" + this.expectEndingValue +
                 "|" + this.leaseFee +
-                "|" + this.totalPrice +
-                "|" + this.monthlyPayment;
+                "|" + getTotalPrice() +
+                "|" + getMonthlyPayment() + "\n";
 
     }
 }

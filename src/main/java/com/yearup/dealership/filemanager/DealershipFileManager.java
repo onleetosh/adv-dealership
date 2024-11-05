@@ -45,6 +45,8 @@ public class DealershipFileManager {
         return dealership;
     }
 
+
+
     public static void saveToCSV(Dealership dealership, String filename){
         try {
             //Creating a file writer and assigning the file writer to the buffered writer.
@@ -59,7 +61,7 @@ public class DealershipFileManager {
             }
             bw.close(); // Close the BufferedWriter
 
-        } catch (IOException e){
+        } catch (Exception e){
             System.out.println("Error while saving Transactions: " + e.getMessage());
         }
     }
