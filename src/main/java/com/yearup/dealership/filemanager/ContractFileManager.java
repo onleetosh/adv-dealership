@@ -55,7 +55,7 @@ public class ContractFileManager {
      */
     public static void saveContractToCSV(Contract contract, String file){
         try {
-            FileWriter fw = new FileWriter(file, true);
+            FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
 
             if (contract instanceof SalesContract) {
@@ -68,6 +68,10 @@ public class ContractFileManager {
             System.out.println("File write error");
             e.printStackTrace();
         }
+    }
+
+    public static void appendContractToCSV(Contract contract, String file){
+
     }
 
 
