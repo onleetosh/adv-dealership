@@ -8,7 +8,7 @@ import com.yearup.dealership.util.Calculation;
 public class LeaseContract extends Contract {
 
     /**
-     * Lease Contract Information
+     * Lease Information
      */
     private double expectEndingValue; //  e = p * (50/100)
     private double leaseFee; // f = p * (7/100)
@@ -16,6 +16,9 @@ public class LeaseContract extends Contract {
     private double expectEndingValuePercentage = 0.5;
     private double leaseFeePercentage = 0.07;
 
+    /**
+     * Constructor for UI process 
+     */
     public LeaseContract(String date,
                          String customerName,
                          String customerEmail,
@@ -24,6 +27,10 @@ public class LeaseContract extends Contract {
         this.expectEndingValue = vehicleSold.getPrice() * expectEndingValuePercentage;
         this.leaseFee = vehicleSold.getPrice() * leaseFeePercentage;
     }
+
+    /**
+     * Constructor for ContractFileManger
+     */
 
     public LeaseContract(String date,
                          String customerName,

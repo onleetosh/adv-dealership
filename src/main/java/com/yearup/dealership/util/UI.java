@@ -18,13 +18,19 @@ public class UI {
     public static String contractFileName = "contracts.csv";
 
     private Dealership currentDealership;
+    //private ArrayList<Contract> contracts;
     private ArrayList<Contract> contracts;
 
 
+    /**
+     * Constructor - initialize and load the file content to ensure the program starts with
+     * a dealership with inventory and a list of contract (objects)
+     */
     public UI(){
         currentDealership = DealershipFileManager.getDealershipFromCSV(inventoryFileName);
         contracts = ContractFileManager.getContractsFromCSV(contractFileName);
     }
+
 
     public void display(){
 
@@ -63,7 +69,7 @@ public class UI {
                 case 7 -> processGetAllVehiclesRequest();
                 case 8 -> processAddVehicleRequest();
                 case 9 -> processRemoveVehicleRequest();
-                case 10 -> processSellOrLeaseRequest();
+                case 10 -> processSellOrLeaseRequestWithHelpers();
                 case 11 -> printListOfContracts(contracts);
                 case 0 -> System.exit(0);
                 default -> System.out.println("Invalid selection. Please try again.");
@@ -73,8 +79,6 @@ public class UI {
 
     private void processRemoveVehicleRequest() {
         System.out.println("Processing vehicle remove request");
-        // int vin = Console.PromptForInt("Enter vin number");
-        // currentDealership.removeVehicleFromInventory(vin);
         currentDealership.removeVehicleFromInventory();
         DealershipFileManager.saveInventoryCSV(currentDealership, inventoryFileName);
     }
@@ -82,8 +86,6 @@ public class UI {
     private void processAddVehicleRequest() {
 
         System.out.println("Processing vehicle add request");
-        // Vehicle v = new Vehicle(vin,year, make, model, vehicleType, color, odometer, price);
-        // currentDealership.addVehicleToInventory(v);
         currentDealership.addVehicleToInventory();
         DealershipFileManager.saveInventoryCSV(currentDealership, inventoryFileName);
 
@@ -153,7 +155,7 @@ public class UI {
     }
 
 
-    public void processSellOrLeaseRequest2() {
+    public void processSellOrLeaseRequestWithHelpers() {
         int vin = getVinFromUser();
         if (vin == 0) return; // VIN input was cancelled
 
@@ -167,27 +169,35 @@ public class UI {
         if (contractType == null) return; // Contract input was cancelled
 
         String customerName = getInput("Enter customer name (or 'q' to cancel): ");
-        if (customerName == null) return; // User canceled
+        if (customerName == null) return; // User ends process
 
         String customerEmail = getInput("Enter customer email (or 'q' to cancel): ");
-        if (customerEmail == null) return; // User canceled
+        if (customerEmail == null) return; // User ends process
 
         String date = getDateFromUser();
-        if (date == null) return; // Invalid or canceled date
+        if (date == null) return; //User end process
 
-        Contract contract;
+        Contract newContract;
         if (contractType.equalsIgnoreCase("sale")) {
             boolean isFinanced = getFinancingOption();
-            contract = new SalesContract(date, customerName, customerEmail, vehicle, isFinanced);
+            newContract = new SalesContract(date, customerName, customerEmail, vehicle, isFinanced);
         } else {
-            contract = new LeaseContract(date, customerName, customerEmail, vehicle);
+            newContract = new LeaseContract(date, customerName, customerEmail, vehicle);
         }
 
+        // Add the new contract to the list of contracts
+        contracts.add(newContract);
 
-        saveContract(contract); // Save contract and remove vehicle from inventory
-        System.out.println("Contract processed: " + contract);
+        System.out.println("Adding contract >>>> " + newContract);
+
+        // Save and update the contract to CSV file
+        ContractFileManager.saveContractCSV(newContract, contractFileName);
     }
 
+
+    /***
+     * Helper methods for processing a contract
+     */
 
     private int getVinFromUser() {
         String input;
@@ -211,8 +221,10 @@ public class UI {
         String input;
         do {
             input = Console.PromptForString("Enter contract type (sale/lease) (or 'q' to cancel): ");
-            if (input.equalsIgnoreCase("q")) return null;
-            if (input.equalsIgnoreCase("sale") || input.equalsIgnoreCase("lease")) return input;
+            if (input.equalsIgnoreCase("q"))
+                return null; // User ends request
+            if (input.equalsIgnoreCase("sale") || input.equalsIgnoreCase("lease"))
+                return input; // return and set contract type to sale or lease
             System.out.println("Invalid contract type. Please enter 'sale' or 'lease'.");
         } while (true);
     }
@@ -221,7 +233,8 @@ public class UI {
         String input;
         do {
             input = Console.PromptForString(prompt);
-            if (input.equalsIgnoreCase("q")) return null;
+            if (input.equalsIgnoreCase("q"))
+                return null; // User ends request
         } while (input.isEmpty());
         return input;
     }
@@ -230,8 +243,9 @@ public class UI {
         String date;
         do {
             date = Console.PromptForString("Enter date (YYYYMMDD) (or 'q' to cancel): ");
-            if (date.equalsIgnoreCase("q")) return null;
-            if (date.length() != 8 || !date.matches("\\d{8}")) {
+            if (date.equalsIgnoreCase("q"))
+                return null; // User ends request
+            if (date.length() != 8 || !date.matches("\\d{8}")) { // ensure format
                 System.out.println("Invalid date format. Please use YYYYMMDD (e.g., 20210928).");
                 continue;
             }
@@ -243,23 +257,21 @@ public class UI {
         String input;
         do {
             input = Console.PromptForString("Will this be financed? (yes/no) (or 'q' to cancel): ");
-            if (input.equalsIgnoreCase("q")) return false;
-            if ("yes".equalsIgnoreCase(input)) return true;
-            if ("no".equalsIgnoreCase(input)) return false;
+            if (input.equalsIgnoreCase("q"))
+                return false; // User ends request
+            if ("yes".equalsIgnoreCase(input))
+                return true;    // return and set finance to Yes
+            if ("no".equalsIgnoreCase(input))
+                return false;    //return and set finance to No
             System.out.println("Please enter 'yes' or 'no'.");
         } while (true);
     }
 
-    private void saveContract(Contract contract) {
-        ContractFileManager.saveContractCSV(contract, contractFileName);
-    }
 
-
-
-
-    public void processSellOrLeaseRequest(){
+    public void processSellOrLeaseRequestWithoutHelpers() {
         int vin = 0;
         String input;
+
         // Get all the info we need from the user
         // Get VIN
         do {
@@ -273,24 +285,22 @@ public class UI {
 
             try {
                 vin = Integer.parseInt(input);
-
                 Vehicle vehicleToSell = currentDealership.getVehicleByVin(vin);
                 if (vehicleToSell == null) {
                     System.out.println("Vehicle not found. Please try again.");
                     input = ""; // Reset input
                     continue;
                 }
-
                 break;
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number. or v to list vehicles, or q to return to main menu.");
+                System.out.println("Invalid input. Please enter a valid number. or 'v' to list vehicles, or 'q' to return to main menu.");
                 input = ""; // Reset input
             }
         } while (input.isEmpty());
 
         System.out.println(vin);
         System.out.println(currentDealership.getVehicleByVin(vin));
-        // at this point we should have a vin...
+        // At this point, we should have a vin...
 
         // Get contract type
         String contractType;
@@ -299,11 +309,9 @@ public class UI {
             if (contractType.equalsIgnoreCase("q")) return;
             if (!contractType.equalsIgnoreCase("sale") && !contractType.equalsIgnoreCase("lease")) {
                 System.out.println("Invalid contract type. Please enter 'sale' or 'lease'.");
-                contractType = " "; // Reset input
+                contractType = ""; // Reset input
             }
         } while (contractType.isEmpty());
-
-
 
         // Get customer name
         String customerName;
@@ -324,8 +332,6 @@ public class UI {
         do {
             date = Console.PromptForString("Enter date (YYYYMMDD) (or 'q' to cancel): ");
             if (date.equalsIgnoreCase("q")) return;
-
-            // Validate date format
             if (date.length() != 8 || !date.matches("\\d{8}")) {
                 System.out.println("Invalid date format. Please use YYYYMMDD (e.g., 20210928)");
                 date = ""; // Reset input
@@ -335,6 +341,7 @@ public class UI {
 
         Vehicle vehicle = currentDealership.getVehicleByVin(vin);
 
+        // Declare contract as a single Contract object
         Contract newContract = null;
 
         // Create appropriate contract type
@@ -358,14 +365,15 @@ public class UI {
         } else {
             newContract = new LeaseContract(date, customerName, customerEmail, vehicle);
         }
-        //ContractFileManager.saveContractCSV(contract, contractFileName);
+
+        // Add the new contract to the list of contracts
+        contracts.add(newContract);
 
         System.out.println("Adding contract >>>> " + newContract);
+
+        // Save and update the contract to CSV file
         ContractFileManager.saveContractCSV(newContract, contractFileName);
-
-
     }
-
 
 
 

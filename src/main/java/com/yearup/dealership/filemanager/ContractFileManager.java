@@ -8,6 +8,7 @@ import com.yearup.dealership.contract.SalesContract;
 import com.yearup.dealership.util.UI;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ContractFileManager {
@@ -52,24 +53,25 @@ public class ContractFileManager {
      * saveContract() method accepts a Contract parameter; instanceOf checks the type of contract
      * before writing file changes
      */
-    public static void saveContractCSV(Contract contract, String file){
+    public static void saveContractCSV(Contract contracts, String file){
         try {
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
 
+                if (contracts instanceof SalesContract) {
+                    bw.write(encodeSaleContractFormat((SalesContract) contracts));
+                }
+                else if (contracts instanceof LeaseContract) {
+                    bw.write(encodeLeaseContractFormat((LeaseContract) contracts) );
+                }
 
-            if (contract instanceof SalesContract) {
-                bw.write(encodeSaleContractFormat((SalesContract) contract));
-            }
-            else if (contract instanceof LeaseContract) {
-                bw.write(encodeLeaseContractFormat((LeaseContract) contract) );
-            }
             bw.close(); // Close the BufferedWriter
         } catch (Exception e) {
             System.out.println("File write error");
             e.printStackTrace();
         }
     }
+
 
     private static SalesContract parseSalesContract(String[] tokens) {
         // Extract sales contract details from tokens

@@ -49,7 +49,7 @@ public abstract class Contract {
     public Vehicle getVehicleSold() {
         return vehicleSold;
     }
-    
+
     /**
      * Abstract methods will return a computed value based on the type of contract
      */

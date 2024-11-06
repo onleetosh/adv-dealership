@@ -10,15 +10,17 @@ import com.yearup.dealership.util.Calculation;
 public class SalesContract extends Contract {
 
     /**
-     * Sales Contract Information
+     * Sales Information
      */
-
     private final double salesTaxPercentage = 0.05;
     private double salesTax; // %5
     private double recordingFee; // $100.00
     private double processingFee; // a fee of $295 if vehicle under $10k, else $495
     private boolean isFinance; // do they want to finance (yes/no)
 
+    /**
+     * Constructor for UI
+     */
     public SalesContract(String date,
                          String customerName,
                          String customerEmail,
@@ -32,6 +34,9 @@ public class SalesContract extends Contract {
         this.isFinance = isFinance;
     }
 
+    /**
+     * Constructor for ContractFileManger
+     */
     public SalesContract(String date,
                          String customerName,
                          String customerEmail,
@@ -79,47 +84,8 @@ public class SalesContract extends Contract {
         this.processingFee = processingFee;
     }
 
-    /*
-    public void processSalesContract(){
-
-        String date = Console.PromptForString("Enter date (MM-dd-YYYY): ");
-        String name = Console.PromptForString("Enter your name" );
-        String email = Console.PromptForString("Enter e-mail address: ");
-
-        System.out.println("Vehicle being sold.");
-        int vin = Console.PromptForInt("Enter Vin: ");
-        int year = Console.PromptForInt("Enter year: ");
-        String make = Console.PromptForString("Enter make: ");
-        String model = Console.PromptForString("Enter model: ");
-        String vehicleType = Console.PromptForString("Enter vehicle type: ");
-        String color = Console.PromptForString("Enter color:  ");
-        int odometer = Console.PromptForInt("Enter odometer: ");
-        double price = Console.PromptForDouble("Enter price: ");
-        Vehicle vehicleSold = new Vehicle(vin,year, make, model, vehicleType, color, odometer, price);
-
-        double totalPrice = Console.PromptForDouble("Enter total price: ");
-        double monthlyPayment = Console.PromptForDouble("Enter monthly payment: ");
-        double salesTax = Console.PromptForDouble("Enter sales tax");
-        double recordingFee = Console.PromptForDouble("Enter recording fee");
-        double processingFee = Console.PromptForDouble("Enter processing fee");
-        boolean finance = Console.PromptForYesNo("Interested in financing?");
-
-        SalesContract newSales = new SalesContract(date,
-                name,
-                email,
-                vehicleSold,
-                totalPrice,
-                monthlyPayment,
-                salesTax,
-                recordingFee,
-                processingFee,
-                finance);
-
-    }
-
-     */
     // 4.25% for 48mos if the price is $10k+ , else 5.25% for 24mos
-
+    //TODO : confirm all calculations are precise
     @Override
     public double getTotalPrice(){
         return getVehicleSold().getPrice() + salesTax + processingFee + recordingFee;
