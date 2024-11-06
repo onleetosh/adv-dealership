@@ -79,7 +79,17 @@ public class Vehicle {
             colorString = ColorCodes.WHITE + color + ColorCodes.RESET;
         } else if (color.equalsIgnoreCase("Blue")) {
             colorString = ColorCodes.BLUE + color + ColorCodes.RESET;
-        } else {
+        }
+        else if (color.equalsIgnoreCase("Yellow")) {
+            colorString = ColorCodes.YELLOW + color + ColorCodes.RESET;
+        }
+        else if (color.equalsIgnoreCase("Black")) {
+            colorString = ColorCodes.BLACK + color + ColorCodes.RESET;
+        }
+        else if (color.equalsIgnoreCase("Green")) {
+            colorString = ColorCodes.GREEN + color + ColorCodes.RESET;
+        }
+        else {
             colorString = color;
         }
         return vin + " | " + year + " | " + make + " | " + model + " | " + vehicleType + " | " + colorString + " | " + odometer + " | $" + price;

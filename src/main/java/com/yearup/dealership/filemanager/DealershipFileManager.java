@@ -7,7 +7,7 @@ import java.io.*;
 
 public class DealershipFileManager {
 
-    public static Dealership getFromCSV(String filename){
+    public static Dealership getDealershipFromCSV(String filename){
 
         Dealership dealership = null;
 
@@ -47,7 +47,7 @@ public class DealershipFileManager {
 
 
 
-    public static void saveToCSV(Dealership dealership, String filename){
+    public static void saveInventoryCSV(Dealership dealership, String filename){
         try {
             //Creating a file writer and assigning the file writer to the buffered writer.
             FileWriter fw = new FileWriter(filename);

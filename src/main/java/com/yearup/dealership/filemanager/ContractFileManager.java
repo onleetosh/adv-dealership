@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class ContractFileManager {
 
-    static ArrayList<Contract> contractsFromCSV = getContractsFromCSV(UI.contactFileName);
+    static ArrayList<Contract> contractsFromCSV = getContractsFromCSV(UI.contractFileName);
     public static void main(String[] args) {
         printListOfContracts(contractsFromCSV);
     }
@@ -35,7 +35,6 @@ public class ContractFileManager {
                 String[] tokens = line.split("\\|");
                 if (tokens.length == 18) {
                     contracts.add(parseSalesContract(tokens));
-
                 }
                 else if (tokens.length == 16) {
                     contracts.add(parseLeaseContract(tokens));
@@ -53,15 +52,17 @@ public class ContractFileManager {
      * saveContract() method accepts a Contract parameter; instanceOf checks the type of contract
      * before writing file changes
      */
-    public static void saveContractToCSV(Contract contract, String file){
+    public static void saveContractCSV(Contract contract, String file){
         try {
-            FileWriter fw = new FileWriter(file);
+            FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
+
 
             if (contract instanceof SalesContract) {
                 bw.write(encodeSaleContractFormat((SalesContract) contract));
-            } else if (contract instanceof LeaseContract) {
-                bw.write(encodeLeaseContractFormat((LeaseContract) contract));
+            }
+            else if (contract instanceof LeaseContract) {
+                bw.write(encodeLeaseContractFormat((LeaseContract) contract) );
             }
             bw.close(); // Close the BufferedWriter
         } catch (Exception e) {
@@ -69,11 +70,6 @@ public class ContractFileManager {
             e.printStackTrace();
         }
     }
-
-    public static void appendContractToCSV(Contract contract, String file){
-
-    }
-
 
     private static SalesContract parseSalesContract(String[] tokens) {
         // Extract sales contract details from tokens
@@ -88,8 +84,6 @@ public class ContractFileManager {
                 Double.parseDouble(tokens[11]) //price
         );
 
-
-
         return new SalesContract(
                 tokens[1], //date
                 tokens[2], //name
@@ -100,26 +94,6 @@ public class ContractFileManager {
                 Double.parseDouble(tokens[14]), //recording fee
                 Boolean.parseBoolean(tokens[16]) // finance - yes or no
         );
-    }
-
-    private static String encodeSaleContractFormat(SalesContract sales){
-        return "SALE|" + sales.getDate() +
-                "|" + sales.getCustomerName() +
-                "|" + sales.getCustomerEmail() +
-                "|" + sales.getVehicleSold().getVin() +
-                "|" + sales.getVehicleSold().getYear() +
-                "|" + sales.getVehicleSold().getMake() +
-                "|" + sales.getVehicleSold().getModel() +
-                "|" + sales.getVehicleSold().getVehicleType() +
-                "|" + sales.getVehicleSold().getColor() +
-                "|" + sales.getVehicleSold().getOdometer() +
-                "|" + sales.getVehicleSold().getPrice() +
-                "|" + sales.getSalesTax() +
-                "|" + sales.getRecordingFee() +
-                "|" + sales.getProcessingFee() +
-                "|" + sales.getTotalPrice() +
-                "|" + sales.isFinance() +
-                "|" + sales.getMonthlyPayment() + "\n";
     }
 
     private static LeaseContract parseLeaseContract(String[] tokens) {
@@ -143,6 +117,26 @@ public class ContractFileManager {
                 Double.parseDouble(tokens[12]),
                 Double.parseDouble(tokens[13])
         );
+    }
+
+    private static String encodeSaleContractFormat(SalesContract sales){
+        return "SALE|" + sales.getDate() +
+                "|" + sales.getCustomerName() +
+                "|" + sales.getCustomerEmail() +
+                "|" + sales.getVehicleSold().getVin() +
+                "|" + sales.getVehicleSold().getYear() +
+                "|" + sales.getVehicleSold().getMake() +
+                "|" + sales.getVehicleSold().getModel() +
+                "|" + sales.getVehicleSold().getVehicleType() +
+                "|" + sales.getVehicleSold().getColor() +
+                "|" + sales.getVehicleSold().getOdometer() +
+                "|" + sales.getVehicleSold().getPrice() +
+                "|" + sales.getSalesTax() +
+                "|" + sales.getRecordingFee() +
+                "|" + sales.getProcessingFee() +
+                "|" + sales.getTotalPrice() +
+                "|" + sales.isFinance() +
+                "|" + sales.getMonthlyPayment() + "\n";
     }
 
     private static String encodeLeaseContractFormat(LeaseContract lease) {

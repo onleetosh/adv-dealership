@@ -1,5 +1,7 @@
 package com.yearup.dealership;
 
+import java.util.ArrayList;
+
 public abstract class Contract {
 
     /**
@@ -47,7 +49,7 @@ public abstract class Contract {
     public Vehicle getVehicleSold() {
         return vehicleSold;
     }
-
+    
     /**
      * Abstract methods will return a computed value based on the type of contract
      */
@@ -82,5 +84,7 @@ public abstract class Contract {
     public void setMonthlyPayment(float monthlyPayment) {
         this.monthlyPayment = monthlyPayment;
     }
+
+
 
 }
