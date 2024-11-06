@@ -1,56 +1,63 @@
 package com.yearup.dealership.util;
-
-import com.yearup.dealership.Contract;
 import com.yearup.dealership.Vehicle;
-import com.yearup.dealership.contract.LeaseContract;
-import com.yearup.dealership.contract.SalesContract;
-import com.yearup.dealership.filemanager.ContractFileManager;
-import com.yearup.dealership.filemanager.DealershipFileManager;
+import com.yearup.dealership.contract.*;
+import com.yearup.dealership.filemanager.*;
 
 import static com.yearup.dealership.util.UI.*;
 
 public class Request {
+
+    /**
+     * Helper method designed to remove a vehicle from the inventory by vin and save changes to inventory.csv
+     */
     public static void processRemoveVehicleRequest() {
         System.out.println("Processing vehicle remove request");
         currentDealership.removeVehicleFromInventory();
         DealershipFileManager.saveInventoryCSV(currentDealership, inventoryFileName);
     }
-    //move this method to the Dealership class
+    /**
+     * Helper method designed to process adding a vehicle to the inventory and save changes to inventory.csv
+     */
     public static void processAddVehicleRequest() {
-
         System.out.println("Processing vehicle add request");
         currentDealership.addVehicleToInventory();
         DealershipFileManager.saveInventoryCSV(currentDealership, inventoryFileName);
+        System.out.println("");
 
     }
+
+    /**
+     * Helper methods designed to process search request, by vehicle by type, mileage, color, year, make, model, and price
+     */
     public static void processGetByVehicleTypeRequest() {
         String vehicleType = Console.PromptForString("Enter vehicle type (Sedan, Truck): ");
-
+        displayHeader();
         for(Vehicle vehicle : currentDealership.getVehiclesByType(vehicleType)){
             displayVehicle(vehicle);
         }
     }
+
     public static void processGetByMileageRequest() {
         int min = Console.PromptForInt("Enter min: ");
         int max = Console.PromptForInt("Enter max: ");
         displayHeader();
-
         for(Vehicle vehicle : currentDealership.getVehiclesByMileage(min, max)){
             displayVehicle(vehicle);
         }
     }
+
     public static void processGetByColorRequest() {
         String color = Console.PromptForString("Enter color for vehicle: ");
-
         displayHeader();
         for (Vehicle vehicle : currentDealership.getVehicleByColor(color)){
             displayVehicle(vehicle);
         }
     }
+
     public static void processGetByYearRequest() {
         int min = Console.PromptForInt("Enter min: ");
         int max = Console.PromptForInt("Enter max: ");
-
+        displayHeader();
         for(Vehicle vehicle : currentDealership.getVehicleByYear(min, max)){
             displayVehicle(vehicle);
         }
@@ -58,34 +65,54 @@ public class Request {
     public static void processGetByMakeModelRequest() {
         String make = Console.PromptForString("Enter make for vehicle: ");
         String model = Console.PromptForString("Enter model for vehicle: ");
+        displayHeader();
         for (Vehicle vehicle : currentDealership.getVehiclesByMakeModel(make, model)) {
             displayVehicle(vehicle);
         }
     }
+
     public static void processGetByPriceRequest() {
         double min = Console.PromptForDouble("Enter min: ");
         double max = Console.PromptForDouble("Enter max: ");
+        displayHeader();
         for(Vehicle vehicle : currentDealership.getVehiclesByPrice(min, max)){
             displayVehicle(vehicle);
         }
     }
+
+    /**
+     * Helper method designed to loop through an ArrayList and display all objects
+     */
     public static void processGetAllVehiclesRequest(){
+        displayHeader();
         for(Vehicle vehicle : currentDealership.getInventory()){
             displayVehicle(vehicle);
         }
     }
 
-
-
-    /*
-    public static void printListOfContracts(ArrayList<Contract> contractsList) {
-        for (Contract contract : contractsList) {
-            System.out.println(contract);  // This calls contract.toString() and prints without brackets or commas
-        }
-    }
+    /**
+     * Helper method used to print a single vehicle object
      */
+    public static void displayVehicle(Vehicle vehicle){
+        System.out.println(vehicle);
+    }
 
-    public void processSellOrLeaseRequestWithHelpers() {
+    public static void displayHeader() {
+        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.println("                                  VEHICLES");
+        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.printf("%6s | %5s | %10s | %10s | %7s | %6s | %7s | %6s \n",
+                         "VIN","YEAR","MAKE", "MODEL","TYPE", "COLOR","ODOMETER","PRICE");
+        System.out.println("-------------------------------------------------------------------------------------");
+    }
+
+
+
+    /**
+     * processSellOrLeaseRequest() method with helper methods
+     */
+    public static void processSellOrLeaseRequest() {
+
         int vin = getVinFromUser();
         if (vin == 0) return; // VIN input was cancelled
 
@@ -111,26 +138,27 @@ public class Request {
         if (contractType.equalsIgnoreCase("sale")) {
             boolean isFinanced = getFinancingOption();
             newContract = new SalesContract(date, customerName, customerEmail, vehicle, isFinanced);
-        } else {
+        }
+        else {
             newContract = new LeaseContract(date, customerName, customerEmail, vehicle);
         }
 
-        // Add the new contract to the list of contracts
+        // Add new contract to ArrayList
         contracts.add(newContract);
-
         System.out.println("Adding contract >>>> " + newContract);
-
-        currentDealership.removeVehicleFromInventory();
-        // Save and update contract.csv file
+        //remove vehicle sold from inventory
+        currentDealership.removeVehicleFromInventory(vehicle);
+        // Save both files
+        DealershipFileManager.saveInventoryCSV(currentDealership, inventoryFileName);
         ContractFileManager.saveContractCSV(newContract, contractFileName);
     }
 
 
     /***
-     * Helper methods for processing a contract
+     * Helper methods designed to prompt user for information
      */
 
-    private int getVinFromUser() {
+    private static int getVinFromUser() {
         String input;
         do {
             input = Console.PromptForString("Enter VIN of the vehicle to sell/lease (or 'v' to view all vehicles or 'q' to cancel): ");
@@ -148,7 +176,7 @@ public class Request {
         } while (true);
     }
 
-    private String getContractTypeFromUser() {
+    private static String getContractTypeFromUser() {
         String input;
         do {
             input = Console.PromptForString("Enter contract type (sale/lease) (or 'q' to cancel): ");
@@ -160,7 +188,7 @@ public class Request {
         } while (true);
     }
 
-    private String getInput(String prompt) {
+    private static String getInput(String prompt) {
         String input;
         do {
             input = Console.PromptForString(prompt);
@@ -170,7 +198,7 @@ public class Request {
         return input;
     }
 
-    private String getDateFromUser() {
+    private static String getDateFromUser() {
         String date;
         do {
             date = Console.PromptForString("Enter date (YYYYMMDD) (or 'q' to cancel): ");
@@ -184,7 +212,7 @@ public class Request {
         } while (true);
     }
 
-    private boolean getFinancingOption() {
+    private static boolean getFinancingOption() {
         String input;
         do {
             input = Console.PromptForString("Will this be financed? (yes/no) (or 'q' to cancel): ");

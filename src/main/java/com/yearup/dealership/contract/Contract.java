@@ -1,4 +1,6 @@
-package com.yearup.dealership;
+package com.yearup.dealership.contract;
+
+import com.yearup.dealership.Vehicle;
 
 import java.util.ArrayList;
 
@@ -8,7 +10,6 @@ public abstract class Contract {
      * Contract Information
      */
 
-    //  protected String type;
     protected String date;
     protected String customerName;
     protected String customerEmail;
@@ -50,7 +51,6 @@ public abstract class Contract {
         return vehicleSold;
     }
 
-
     /**
      * Setters
      */
@@ -86,10 +86,14 @@ public abstract class Contract {
 
     public abstract double getMonthlyPayment();
 
-
+    /**
+     * Helper method designed to print all objects in the ArrayList
+     */
     public static void displayAllContracts(ArrayList<Contract> contractsList) {
         for (Contract contract : contractsList) {
-            System.out.println(contract);  // This calls contract.toString() and prints without brackets or commas
+            // Use println to convert and print contract objects as a string,
+            // otherwise objects will print as an ArrayList [brackets, commas]
+            System.out.println(contract);
         }
     }
 

@@ -1,9 +1,6 @@
 package com.yearup.dealership.contract;
 
-import java.util.ArrayList;
 
-
-import com.yearup.dealership.Contract;
 import com.yearup.dealership.Vehicle;
 import com.yearup.dealership.util.Calculation;
 
@@ -12,6 +9,7 @@ public class SalesContract extends Contract {
     /**
      * Sales Information
      */
+
     private final double salesTaxPercentage = 0.05;
     private double salesTax; // %5
     private double recordingFee; // $100.00
@@ -19,9 +17,10 @@ public class SalesContract extends Contract {
     private boolean isFinance; // do they want to finance (yes/no)
 
     /**
-     * Constructor used to initialize a Sales contract; requires minimal information and the missing
+     * Constructor One: used to initialize a Sales contract; requires minimal information and the missing
      * values are computed based on the vehicle's price.
      */
+
     public SalesContract(String date,
                          String customerName,
                          String customerEmail,
@@ -36,8 +35,9 @@ public class SalesContract extends Contract {
     }
 
     /**
-     * Constructor used initialize a Sales contract; requires all contract details
+     * Constructor Two: used initialize a Sales contract; requires all contract details
      */
+
     public SalesContract(String date,
                          String customerName,
                          String customerEmail,
@@ -52,6 +52,10 @@ public class SalesContract extends Contract {
         this.processingFee = processingFee;
         this.recordingFee = recordingFee;
     }
+
+    /**
+     * Getters
+     */
 
     public double getRecordingFee() {
         return recordingFee;
@@ -69,6 +73,10 @@ public class SalesContract extends Contract {
         return salesTax;
     }
 
+    /**
+     * Setters
+     */
+
     public void setSalesTax(double salesTax) {
         this.salesTax = salesTax;
     }
@@ -85,8 +93,13 @@ public class SalesContract extends Contract {
         this.processingFee = processingFee;
     }
 
+    /**
+     * Override to calculate and return the value amount for total price and monthly payment
+     */
+
     // 4.25% for 48mos if the price is $10k+ , else 5.25% for 24mos
     //TODO : confirm all calculations are precise
+
     @Override
     public double getTotalPrice(){
         return getVehicleSold().getPrice() + salesTax + processingFee + recordingFee;
@@ -103,6 +116,10 @@ public class SalesContract extends Contract {
             return 0;
         }
     }
+
+    /**
+     * Override to convert and return Sales contract as a custom string
+     */
 
     @Override
     public String toString() {

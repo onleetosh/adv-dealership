@@ -1,11 +1,7 @@
 package com.yearup.dealership.filemanager;
 
-import com.yearup.dealership.Contract;
+import com.yearup.dealership.contract.*;
 import com.yearup.dealership.Vehicle;
-
-import com.yearup.dealership.contract.LeaseContract;
-import com.yearup.dealership.contract.SalesContract;
-import com.yearup.dealership.util.UI;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -15,6 +11,7 @@ public class ContractFileManager {
     /**
      * getContractsFromCSV reads a file and return the data as objects of an ArrayList
      */
+
     public static ArrayList<Contract> getContractsFromCSV(String fileName) {
         ArrayList<Contract> contracts = new ArrayList<>();  // Initialize ArrayList for contracts
 
@@ -42,8 +39,9 @@ public class ContractFileManager {
     }
 
     /**
-     * Helper; extract Sale and Lease Contract information from tokens of an array strings and return the parse data
+     * Helper used to extract Sale and Lease Contract information from tokens of an array strings and return the parse data
      */
+
     private static SalesContract parseSalesContract(String[] tokens) {
         // create a new vehicle object and parse the information using tokens
         Vehicle parseVehicle = new Vehicle(
@@ -69,7 +67,6 @@ public class ContractFileManager {
                 Boolean.parseBoolean(tokens[16]) // finance - yes or no
         );
     }
-
     private static LeaseContract parseLeaseContract(String[] tokens) {
         // create a new vehicle object and parse the information using tokens
         Vehicle parseVehicle = new Vehicle(
@@ -98,6 +95,7 @@ public class ContractFileManager {
      * saveContract() method accepts a Contract parameter; instanceOf checks the type of contract
      * before writing file changes
      */
+
     public static void saveContractCSV(Contract contracts, String fileName){
         try {
             FileWriter fw = new FileWriter(fileName, true);
@@ -119,8 +117,9 @@ public class ContractFileManager {
     }
 
     /**
-     * Helper; set and return a string format for Sale and Lease Contract objects
+     * Helper methods used to set and return a string format for Sale and Lease Contract objects
      */
+
     private static String encodeSalesContractToString(SalesContract sales){
         return "SALE|" + sales.getDate() +
                 "|" + sales.getCustomerName() +
@@ -140,7 +139,6 @@ public class ContractFileManager {
                 "|" + sales.isFinance() +
                 "|" + sales.getMonthlyPayment() + "\n";
     }
-
     private static String encodeLeaseContractToString(LeaseContract lease) {
         return "LEASE|" + lease.getDate() +
                 "|" + lease.getCustomerName() +

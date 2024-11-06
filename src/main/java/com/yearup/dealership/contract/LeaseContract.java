@@ -1,6 +1,5 @@
 package com.yearup.dealership.contract;
 
-import com.yearup.dealership.Contract;
 import com.yearup.dealership.Vehicle;
 import com.yearup.dealership.util.Calculation;
 
@@ -17,7 +16,7 @@ public class LeaseContract extends Contract {
     private double leaseFeePercentage = 0.07;
 
     /**
-     * Constructor used to initialize a Lease contract; requires minimal information and the missing
+     * Constructor One: used to initialize a Lease contract; requires minimal information and the missing
      * values are computed based on the vehicle's price.
      */
     public LeaseContract(String date,
@@ -30,7 +29,7 @@ public class LeaseContract extends Contract {
     }
 
     /**
-     * Constructor used to initialize a Lease contract; requires all contract details
+     * Constructor Two: used to initialize a Lease contract; requires all contract details
      */
 
     public LeaseContract(String date,
@@ -44,6 +43,10 @@ public class LeaseContract extends Contract {
         this.expectEndingValue = expectEndingValue;
     }
 
+    /**
+     * Getters
+     */
+
     public double getExpectEndingValue() {
         return expectEndingValue;
     }
@@ -52,6 +55,9 @@ public class LeaseContract extends Contract {
         return leaseFee;
     }
 
+    /**
+     * Setters
+     */
     public void setLeaseFee(double leaseFee) {
         this.leaseFee = leaseFee;
     }
@@ -92,6 +98,11 @@ public class LeaseContract extends Contract {
     }
 
      */
+
+    /**
+     * Override to calculate and return the value amount for total price and monthly payment
+     */
+
     //all leases are financed at 4.0% for 36 mos
     @Override
     public double getTotalPrice() {
@@ -105,6 +116,9 @@ public class LeaseContract extends Contract {
         return Calculation.calculateLoanPayment(getTotalPrice(), financeRate, financeTerm);
     }
 
+    /**
+     * Override to convert and return Sales contract as a custom string
+     */
     @Override
     public String toString() {
                               // 0  1  2  3  4  5  6  7  8  9  10  11   12   13   14  15

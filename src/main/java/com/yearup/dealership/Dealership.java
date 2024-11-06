@@ -52,10 +52,16 @@ public class Dealership {
     }
 
 
+    /**
+     * Method overloading - pass a Vehicle object as its parameter and add object
+     */
     public void addVehicleToInventory(Vehicle add){
         inventory.add(add);
     }
 
+    /**
+     * Method overloading - Pass no parameters but instead prompt user for information
+     */
     public void addVehicleToInventory(){
         int vin = Console.PromptForInt("Enter Vin: ");
         int year = Console.PromptForInt("Enter year: ");
@@ -69,26 +75,25 @@ public class Dealership {
         inventory.add(vehicle);
     }
 
+    /**
+     * Method overloading - pass a Vehicle object as its parameter and remove object
+     */
     public void removeVehicleFromInventory(Vehicle remove){
         inventory.remove(remove);
     }
-    //Method Overload
+
+    /**
+     * Method overloading - Pass no parameters but instead prompt user for information
+     */
     public void removeVehicleFromInventory(){
         int vin = Console.PromptForInt("Enter vin number");
         Vehicle remove = this.getVehicleByVin(vin);
         inventory.remove(remove);
     }
 
-    public ArrayList<Vehicle> searchVehicleByVin(int vin) {
-        ArrayList<Vehicle> result = new ArrayList<>();
-        for (Vehicle vehicle : inventory){
-            if(vehicle.getVin() == vin) {
-                result.add(vehicle);
-            }
-        }
-        return result;
-    }
-
+    /**
+     * Helper methods designed to loop through the ArrayList and return matching objects
+     */
     public ArrayList<Vehicle> getVehiclesByPrice(double min, double max){
         ArrayList<Vehicle> result = new ArrayList<Vehicle>();
         for(Vehicle vehicle : this.inventory){
@@ -151,6 +156,16 @@ public class Dealership {
             }
         }
         return null;
+    }
+
+    public ArrayList<Vehicle> searchVehicleByVin(int vin) {
+        ArrayList<Vehicle> result = new ArrayList<>();
+        for (Vehicle vehicle : inventory){
+            if(vehicle.getVin() == vin) {
+                result.add(vehicle);
+            }
+        }
+        return result;
     }
 
 }

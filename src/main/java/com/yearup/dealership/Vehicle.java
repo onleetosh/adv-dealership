@@ -73,26 +73,28 @@ public class Vehicle {
     @Override
     public String toString() {
         String colorString;
-        if (color.equalsIgnoreCase("Red")) {
+        if (color.equalsIgnoreCase("Red"))
             colorString = ColorCodes.RED + color + ColorCodes.RESET;
-        } else if (color.equalsIgnoreCase("White")) {
-            colorString = ColorCodes.WHITE + color + ColorCodes.RESET;
-        } else if (color.equalsIgnoreCase("Blue")) {
+        else if (color.equalsIgnoreCase("Blue"))
             colorString = ColorCodes.BLUE + color + ColorCodes.RESET;
-        }
-        else if (color.equalsIgnoreCase("Yellow")) {
+        else if (color.equalsIgnoreCase("Yellow"))
             colorString = ColorCodes.YELLOW + color + ColorCodes.RESET;
-        }
-        else if (color.equalsIgnoreCase("Black")) {
-            colorString = ColorCodes.BLACK + color + ColorCodes.RESET;
-        }
-        else if (color.equalsIgnoreCase("Green")) {
+        else if (color.equalsIgnoreCase("Green"))
             colorString = ColorCodes.GREEN + color + ColorCodes.RESET;
-        }
-        else {
+        else
             colorString = color;
-        }
-        return vin + " | " + year + " | " + make + " | " + model + " | " + vehicleType + " | " + colorString + " | " + odometer + " | $" + price;
+
+        return String.format(" %5d | %5d | %10s | %10s | %7s | %15s | %8d | $%3.2f ",
+                this.vin,
+                this.year,
+                this.make,
+                this.model,
+                this.vehicleType,
+                colorString,
+                this.odometer,
+                this.price
+        );
+        //return vin + " | " + year + " | " + make + " | " + model + " | " + vehicleType + " | " + colorString + " | " + odometer + " | $" + price;
 
     }
 }
