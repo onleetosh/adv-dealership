@@ -50,12 +50,6 @@ public abstract class Contract {
         return vehicleSold;
     }
 
-    /**
-     * Abstract methods will return a computed value based on the type of contract
-     */
-    public abstract double getTotalPrice();
-
-    public abstract double getMonthlyPayment();
 
     /**
      * Setters
@@ -85,6 +79,19 @@ public abstract class Contract {
         this.monthlyPayment = monthlyPayment;
     }
 
+    /**
+     * Abstract methods will return a computed value based on the type of contract
+     */
+    public abstract double getTotalPrice();
+
+    public abstract double getMonthlyPayment();
+
+
+    public static void displayAllContracts(ArrayList<Contract> contractsList) {
+        for (Contract contract : contractsList) {
+            System.out.println(contract);  // This calls contract.toString() and prints without brackets or commas
+        }
+    }
 
 
 }

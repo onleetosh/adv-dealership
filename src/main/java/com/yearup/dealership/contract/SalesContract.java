@@ -19,7 +19,8 @@ public class SalesContract extends Contract {
     private boolean isFinance; // do they want to finance (yes/no)
 
     /**
-     * Constructor for UI
+     * Constructor used to initialize a Sales contract; requires minimal information and the missing
+     * values are computed based on the vehicle's price.
      */
     public SalesContract(String date,
                          String customerName,
@@ -35,7 +36,7 @@ public class SalesContract extends Contract {
     }
 
     /**
-     * Constructor for ContractFileManger
+     * Constructor used initialize a Sales contract; requires all contract details
      */
     public SalesContract(String date,
                          String customerName,
@@ -93,7 +94,6 @@ public class SalesContract extends Contract {
 
     @Override
     public double getMonthlyPayment(){
-
         if (isFinance) {
             double financeRate = (getVehicleSold().getPrice() < 10000) ? 0.0525 : 0.0425;
             double financeTerm = (getVehicleSold().getPrice() < 10000) ? 24 : 48;
@@ -102,15 +102,12 @@ public class SalesContract extends Contract {
         else {
             return 0;
         }
-
     }
 
     @Override
     public String toString() {
-
         String financeDecision = isFinance ? "YES" : "NO";
-
-        // 0  1  2  3  4  5  6  7  8  9  10  11   12   13   14  15   16  17
+                              // 0  1  2  3  4  5  6  7  8  9  10  11   12   13   14  15   16  17
         return String.format("SALES|%s|%s|%s|%d|%d|%s|%s|%s|%s|%d|%.2f|%.2f|%.2f|%.2f|%.2f|%s|%.2f",
                 this.date, //1
                 this.customerName,//2

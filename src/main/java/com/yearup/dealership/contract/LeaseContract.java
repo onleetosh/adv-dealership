@@ -17,7 +17,8 @@ public class LeaseContract extends Contract {
     private double leaseFeePercentage = 0.07;
 
     /**
-     * Constructor for UI process 
+     * Constructor used to initialize a Lease contract; requires minimal information and the missing
+     * values are computed based on the vehicle's price.
      */
     public LeaseContract(String date,
                          String customerName,
@@ -29,7 +30,7 @@ public class LeaseContract extends Contract {
     }
 
     /**
-     * Constructor for ContractFileManger
+     * Constructor used to initialize a Lease contract; requires all contract details
      */
 
     public LeaseContract(String date,
@@ -106,7 +107,7 @@ public class LeaseContract extends Contract {
 
     @Override
     public String toString() {
-        // 0  1  2  3  4  5  6  7  8  9  10  11   12   13   14  15
+                              // 0  1  2  3  4  5  6  7  8  9  10  11   12   13   14  15
         return String.format("LEASE|%s|%s|%s|%d|%d|%s|%s|%s|%s|%d|%.2f|%.2f|%.2f|%.2f|%.2f",
                 this.date,
                 this.customerName,

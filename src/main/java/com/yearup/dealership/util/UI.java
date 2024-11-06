@@ -17,9 +17,9 @@ public class UI {
     public static String inventoryFileName = "inventory.csv";
     public static String contractFileName = "contracts.csv";
 
-    private Dealership currentDealership;
+    public static Dealership currentDealership;
     //private ArrayList<Contract> contracts;
-    private ArrayList<Contract> contracts;
+    public static ArrayList<Contract> contracts;
 
 
     /**
@@ -30,7 +30,6 @@ public class UI {
         currentDealership = DealershipFileManager.getDealershipFromCSV(inventoryFileName);
         contracts = ContractFileManager.getContractsFromCSV(contractFileName);
     }
-
 
     public void display(){
 
@@ -70,11 +69,16 @@ public class UI {
                 case 8 -> processAddVehicleRequest();
                 case 9 -> processRemoveVehicleRequest();
                 case 10 -> processSellOrLeaseRequestWithHelpers();
-                case 11 -> printListOfContracts(contracts);
+                case 11 -> Contract.displayAllContracts(contracts);
                 case 0 -> System.exit(0);
                 default -> System.out.println("Invalid selection. Please try again.");
             }
         }
+    }
+
+    public static void displayVehicle(Vehicle vehicle){
+        displayHeader();
+        System.out.println(vehicle);
     }
 
     private void processRemoveVehicleRequest() {
@@ -136,24 +140,21 @@ public class UI {
             displayVehicle(vehicle);
         }
     }
-    public void processGetAllVehiclesRequest(){
+    private void processGetAllVehiclesRequest(){
         for(Vehicle vehicle : currentDealership.getInventory()){
             displayVehicle(vehicle);
         }
     }
 
 
-    public void displayVehicle(Vehicle vehicle){
-        displayHeader();
-        System.out.println(vehicle);
-    }
 
+    /*
     public static void printListOfContracts(ArrayList<Contract> contractsList) {
         for (Contract contract : contractsList) {
             System.out.println(contract);  // This calls contract.toString() and prints without brackets or commas
         }
     }
-
+     */
 
     public void processSellOrLeaseRequestWithHelpers() {
         int vin = getVinFromUser();
@@ -190,7 +191,8 @@ public class UI {
 
         System.out.println("Adding contract >>>> " + newContract);
 
-        // Save and update the contract to CSV file
+        currentDealership.removeVehicleFromInventory();
+        // Save and update contract.csv file
         ContractFileManager.saveContractCSV(newContract, contractFileName);
     }
 
@@ -377,7 +379,7 @@ public class UI {
 
 
 
-    public void displayHeader() {
+    public static void displayHeader() {
         System.out.println("vin | year | make | model | type | color | odometer | price ");
     }
 
