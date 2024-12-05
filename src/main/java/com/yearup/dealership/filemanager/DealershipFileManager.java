@@ -48,21 +48,38 @@ public class DealershipFileManager {
 
 
     public static void saveInventoryCSV(Dealership dealership, String filename){
+
+        BufferedWriter bw = null;
+
         try {
             //Creating a file writer and assigning the file writer to the buffered writer.
             FileWriter fw = new FileWriter(filename);
-            BufferedWriter bw = new BufferedWriter(fw);
+            bw = new BufferedWriter(fw);
 
+            System.out.println("--TRACE-- Begin writing to file ");
             bw.write(getEncodedDealershipHeader(dealership));
 
             // Loop through transactions and write each one to the file
             for (Vehicle vehicle : dealership.getAllVehicles()) {
                 bw.write(getEncodedVehicle(vehicle));
             }
-            bw.close(); // Close the BufferedWriter
+
+            System.out.println("--TRACE-- Close file...");
 
         } catch (Exception e){
             System.out.println("Error while saving Transactions: " + e.getMessage());
+        }
+        // -- refactored with finally
+        finally {
+            if(bw != null){
+                try {
+                    bw.close();
+                }
+                catch (IOException e ){
+                 e.printStackTrace();
+                }
+            }
+
         }
     }
 
